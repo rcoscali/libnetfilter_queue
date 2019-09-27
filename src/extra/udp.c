@@ -140,6 +140,8 @@ nfq_udp_mangle_ipv4(struct pkt_buff *pkt,
 	iph = (struct iphdr *)pkt->network_header;
 	udph = (struct udphdr *)(pkt->network_header + iph->ihl*4);
 
+	udph->len = htons(ntohs(udph->len) + rep_len - match_len);
+
 	if (!nfq_ip_mangle(pkt, iph->ihl*4 + sizeof(struct udphdr),
 				match_offset, match_len, rep_buffer, rep_len))
 		return 0;
