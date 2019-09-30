@@ -35,7 +35,7 @@ uint16_t nfq_checksum(uint32_t sum, uint16_t *buf, int size)
 	return (uint16_t)(~sum);
 }
 
-uint16_t nfq_checksum_tcpudp_ipv4(struct iphdr *iph)
+uint16_t nfq_checksum_tcpudp_ipv4(struct iphdr *iph, uint16_t protonum)
 {
 	uint32_t sum = 0;
 	uint32_t iph_len = iph->ihl*4;
@@ -46,13 +46,14 @@ uint16_t nfq_checksum_tcpudp_ipv4(struct iphdr *iph)
 	sum += (iph->saddr) & 0xFFFF;
 	sum += (iph->daddr >> 16) & 0xFFFF;
 	sum += (iph->daddr) & 0xFFFF;
-	sum += htons(IPPROTO_TCP);
+	sum += htons(protonum);
 	sum += htons(len);
 
 	return nfq_checksum(sum, (uint16_t *)payload, len);
 }
 
-uint16_t nfq_checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr)
+uint16_t nfq_checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr,
+				  uint16_t protonum)
 {
 	uint32_t sum = 0;
 	uint32_t hdr_len = (uint32_t *)transport_hdr - (uint32_t *)ip6h;
@@ -68,7 +69,7 @@ uint16_t nfq_checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr)
 		sum += (ip6h->ip6_dst.s6_addr16[i] >> 16) & 0xFFFF;
 		sum += (ip6h->ip6_dst.s6_addr16[i]) & 0xFFFF;
 	}
-	sum += htons(IPPROTO_TCP);
+	sum += htons(protonum);
 	sum += htons(ip6h->ip6_plen);
 
 	return nfq_checksum(sum, (uint16_t *)payload, len);
