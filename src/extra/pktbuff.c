@@ -226,7 +226,7 @@ static int enlarge_pkt(struct pkt_buff *pkt, unsigned int extra)
 /**
  * pktb_mangle - adjust contents of a packet
  * \param pkt Pointer to packet buffer
- * \param dataoff Offset to layer 3 header. Specify zero to access layer 2 (IP)
+ * \param dataoff Offset to layer 4 header. Specify zero to access layer 3 (IP)
  * header
  * \param match_offset Further offset to content that you want to mangle
  * \param match_len Length of the existing content you want to mangle
