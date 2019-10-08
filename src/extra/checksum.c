@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <endian.h>
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <netinet/ip6.h>
@@ -26,8 +27,13 @@ uint16_t nfq_checksum(uint32_t sum, uint16_t *buf, int size)
 		sum += *buf++;
 		size -= sizeof(uint16_t);
 	}
-	if (size)
-		sum += *(uint8_t *)buf;
+	if (size) {
+#if __BYTE_ORDER == __BIG_ENDIAN
+		sum += (uint16_t)*(uint8_t *)buf << 8;
+#else
+		sum += (uint16_t)*(uint8_t *)buf;
+#endif
+	}
 
 	sum = (sum >> 16) + (sum & 0xffff);
 	sum += (sum >>16);
