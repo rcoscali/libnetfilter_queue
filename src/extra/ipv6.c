@@ -134,7 +134,7 @@ int nfq_ip6_snprintf(char *buf, size_t size, const struct ip6_hdr *ip6h)
 	inet_ntop(AF_INET6, &ip6h->ip6_src, src, INET6_ADDRSTRLEN);
 	inet_ntop(AF_INET6, &ip6h->ip6_dst, dst, INET6_ADDRSTRLEN);
 
-	ret = snprintf(buf, size, "SRC=%s DST=%s LEN=%Zu TC=0x%X "
+	ret = snprintf(buf, size, "SRC=%s DST=%s LEN=%zu TC=0x%X "
 				  "HOPLIMIT=%u FLOWLBL=%u ",
 			src, dst,
 			ntohs(ip6h->ip6_plen) + sizeof(struct ip6_hdr),
