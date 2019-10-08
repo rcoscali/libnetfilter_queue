@@ -40,8 +40,8 @@
  *
  * \return a pointer to a new queue handle or NULL on failure.
  */
-struct pkt_buff *
-pktb_alloc(int family, void *data, size_t len, size_t extra)
+EXPORT_SYMBOL
+struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 {
 	struct pkt_buff *pktb;
 	void *pkt_data;
@@ -84,120 +84,119 @@ pktb_alloc(int family, void *data, size_t len, size_t extra)
 	}
 	return pktb;
 }
-EXPORT_SYMBOL(pktb_alloc);
 
 /**
  * pktb_data - return pointer to the beginning of the packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 uint8_t *pktb_data(struct pkt_buff *pktb)
 {
 	return pktb->data;
 }
-EXPORT_SYMBOL(pktb_data);
 
 /**
  * pktb_len - return length of the packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 uint32_t pktb_len(struct pkt_buff *pktb)
 {
 	return pktb->len;
 }
-EXPORT_SYMBOL(pktb_len);
 
 /**
  * pktb_free - release packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 void pktb_free(struct pkt_buff *pktb)
 {
 	free(pktb);
 }
-EXPORT_SYMBOL(pktb_free);
 
 /**
  * pktb_push - update pointer to the beginning of the packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 void pktb_push(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->data -= len;
 	pktb->len += len;
 }
-EXPORT_SYMBOL(pktb_push);
 
 /**
  * pktb_pull - update pointer to the beginning of the packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 void pktb_pull(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->data += len;
 	pktb->len -= len;
 }
-EXPORT_SYMBOL(pktb_pull);
 
 /**
  * pktb_put - add extra bytes to the tail of the packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 void pktb_put(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->tail += len;
 	pktb->len += len;
 }
-EXPORT_SYMBOL(pktb_put);
 
 /**
  * pktb_trim - set new length for this packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 void pktb_trim(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->len = len;
 }
-EXPORT_SYMBOL(pktb_trim);
 
 /**
  * pktb_tailroom - get room in bytes in the tail of the packet buffer
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 unsigned int pktb_tailroom(struct pkt_buff *pktb)
 {
 	return pktb->data_len - pktb->len;
 }
-EXPORT_SYMBOL(pktb_tailroom);
 
 /**
  * pktb_mac_header - return pointer to layer 2 header (if any)
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 uint8_t *pktb_mac_header(struct pkt_buff *pktb)
 {
 	return pktb->mac_header;
 }
-EXPORT_SYMBOL(pktb_mac_header);
 
 /**
  * pktb_network_header - return pointer to layer 3 header
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 uint8_t *pktb_network_header(struct pkt_buff *pktb)
 {
 	return pktb->network_header;
 }
-EXPORT_SYMBOL(pktb_network_header);
 
 /**
  * pktb_transport_header - return pointer to layer 4 header (if any)
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 uint8_t *pktb_transport_header(struct pkt_buff *pktb)
 {
 	return pktb->transport_header;
 }
-EXPORT_SYMBOL(pktb_transport_header);
 
 static int pktb_expand_tail(struct pkt_buff *pkt, int extra)
 {
@@ -237,12 +236,13 @@ static int enlarge_pkt(struct pkt_buff *pkt, unsigned int extra)
  * argument to the pktb_alloc() call that created \b pkt is less than the excess
  * of \b rep_len over \b match_len
  */
+EXPORT_SYMBOL
 int pktb_mangle(struct pkt_buff *pkt,
-		 unsigned int dataoff,
-		 unsigned int match_offset,
-		 unsigned int match_len,
-		 const char *rep_buffer,
-		 unsigned int rep_len)
+		unsigned int dataoff,
+		unsigned int match_offset,
+		unsigned int match_len,
+		const char *rep_buffer,
+		unsigned int rep_len)
 {
 	unsigned char *data;
 
@@ -271,17 +271,16 @@ int pktb_mangle(struct pkt_buff *pkt,
 	pkt->mangled = true;
 	return 1;
 }
-EXPORT_SYMBOL(pktb_mangle);
 
 /**
  * pktb_mangled - return true if packet has been mangled
  * \param pktb Pointer to packet buffer
  */
+EXPORT_SYMBOL
 bool pktb_mangled(const struct pkt_buff *pkt)
 {
 	return pkt->mangled;
 }
-EXPORT_SYMBOL(pktb_mangled);
 
 /**
  * @}

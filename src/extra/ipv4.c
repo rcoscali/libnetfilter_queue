@@ -32,6 +32,7 @@
  * This funcion returns NULL if the IPv4 is malformed or the protocol version
  * is not 4. On success, it returns a valid pointer to the IPv4 header.
  */
+EXPORT_SYMBOL
 struct iphdr *nfq_ip_get_hdr(struct pkt_buff *pktb)
 {
 	struct iphdr *iph;
@@ -53,7 +54,6 @@ struct iphdr *nfq_ip_get_hdr(struct pkt_buff *pktb)
 
 	return iph;
 }
-EXPORT_SYMBOL(nfq_ip_get_hdr);
 
 /**
  * nfq_ip_set_transport_header - set transport header
@@ -64,6 +64,7 @@ EXPORT_SYMBOL(nfq_ip_get_hdr);
  *
  * Level 4 helper functions need this to be set.
  */
+EXPORT_SYMBOL
 int nfq_ip_set_transport_header(struct pkt_buff *pktb, struct iphdr *iph)
 {
 	int doff = iph->ihl * 4;
@@ -75,7 +76,6 @@ int nfq_ip_set_transport_header(struct pkt_buff *pktb, struct iphdr *iph)
 	pktb->transport_header = pktb->network_header + doff;
 	return 0;
 }
-EXPORT_SYMBOL(nfq_ip_set_transport_header);
 
 /**
  * nfq_ip_set_checksum - set IPv4 checksum
@@ -84,6 +84,7 @@ EXPORT_SYMBOL(nfq_ip_set_transport_header);
  * \note Call to this function if you modified the IPv4 header to update the
  * checksum.
  */
+EXPORT_SYMBOL
 void nfq_ip_set_checksum(struct iphdr *iph)
 {
 	uint32_t iph_len = iph->ihl * 4;
@@ -91,7 +92,6 @@ void nfq_ip_set_checksum(struct iphdr *iph)
 	iph->check = 0;
 	iph->check = nfq_checksum(0, (uint16_t *)iph, iph_len);
 }
-EXPORT_SYMBOL(nfq_ip_set_checksum);
 
 /**
  * nfq_ip_mangle - mangle IPv4 packet buffer
@@ -105,6 +105,7 @@ EXPORT_SYMBOL(nfq_ip_set_checksum);
  * \note This function updates the IPv4 length and recalculates the IPv4
  * checksum (if necessary)
  */
+EXPORT_SYMBOL
 int nfq_ip_mangle(struct pkt_buff *pkt, unsigned int dataoff,
 		  unsigned int match_offset, unsigned int match_len,
 		  const char *rep_buffer, unsigned int rep_len)
@@ -121,7 +122,6 @@ int nfq_ip_mangle(struct pkt_buff *pkt, unsigned int dataoff,
 
 	return 1;
 }
-EXPORT_SYMBOL(nfq_ip_mangle);
 
 /**
  * nfq_pkt_snprintf_ip - print IPv4 header into buffer in iptables LOG format
@@ -133,6 +133,7 @@ EXPORT_SYMBOL(nfq_ip_mangle);
  * case that there is enough room in the buffer. Read snprintf manpage for more
  * information to know more about this strange behaviour.
  */
+EXPORT_SYMBOL
 int nfq_ip_snprintf(char *buf, size_t size, const struct iphdr *iph)
 {
 	int ret;
@@ -152,7 +153,6 @@ int nfq_ip_snprintf(char *buf, size_t size, const struct iphdr *iph)
 
 	return ret;
 }
-EXPORT_SYMBOL(nfq_ip_snprintf);
 
 /**
  * @}

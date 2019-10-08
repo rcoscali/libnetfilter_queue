@@ -40,6 +40,7 @@
  * The calling sequence is \b main --> \b mnl_cb_run --> \b queue_cb -->
  * \b nfq_send_verdict --> \b nfq_nlmsg_verdict_put
  */
+EXPORT_SYMBOL
 void nfq_nlmsg_verdict_put(struct nlmsghdr *nlh, int id, int verdict)
 {
 	struct nfqnl_msg_verdict_hdr vh = {
@@ -48,20 +49,19 @@ void nfq_nlmsg_verdict_put(struct nlmsghdr *nlh, int id, int verdict)
 	};
 	mnl_attr_put(nlh, NFQA_VERDICT_HDR, sizeof(vh), &vh);
 }
-EXPORT_SYMBOL(nfq_nlmsg_verdict_put);
 
+EXPORT_SYMBOL
 void nfq_nlmsg_verdict_put_mark(struct nlmsghdr *nlh, uint32_t mark)
 {
 	mnl_attr_put_u32(nlh, NFQA_MARK, htonl(mark));
 }
-EXPORT_SYMBOL(nfq_nlmsg_verdict_put_mark);
 
-void
-nfq_nlmsg_verdict_put_pkt(struct nlmsghdr *nlh, const void *pkt, uint32_t plen)
+EXPORT_SYMBOL
+void nfq_nlmsg_verdict_put_pkt(struct nlmsghdr *nlh, const void *pkt,
+			       uint32_t plen)
 {
 	mnl_attr_put(nlh, NFQA_PAYLOAD, plen, pkt);
 }
-EXPORT_SYMBOL(nfq_nlmsg_verdict_put_pkt);
 
 /**
  * @}
@@ -92,6 +92,7 @@ EXPORT_SYMBOL(nfq_nlmsg_verdict_put_pkt);
  *   given protocol family.  Both commands are ignored by Linux kernel 3.8 and
  *   later versions.
  */
+EXPORT_SYMBOL
 void nfq_nlmsg_cfg_put_cmd(struct nlmsghdr *nlh, uint16_t pf, uint8_t cmd)
 {
 	struct nfqnl_msg_config_cmd command = {
@@ -100,7 +101,6 @@ void nfq_nlmsg_cfg_put_cmd(struct nlmsghdr *nlh, uint16_t pf, uint8_t cmd)
 	};
 	mnl_attr_put(nlh, NFQA_CFG_CMD, sizeof(command), &command);
 }
-EXPORT_SYMBOL(nfq_nlmsg_cfg_put_cmd);
 
 /**
  * nfq_nlmsg_cfg_put_params Add parameter to netlink message
@@ -108,6 +108,7 @@ EXPORT_SYMBOL(nfq_nlmsg_cfg_put_cmd);
  * \param mode one of NFQNL_COPY_NONE, NFQNL_COPY_META or NFQNL_COPY_PACKET
  * \param range value of parameter
  */
+EXPORT_SYMBOL
 void nfq_nlmsg_cfg_put_params(struct nlmsghdr *nlh, uint8_t mode, int range)
 {
 	struct nfqnl_msg_config_params params = {
@@ -116,18 +117,17 @@ void nfq_nlmsg_cfg_put_params(struct nlmsghdr *nlh, uint8_t mode, int range)
 	};
 	mnl_attr_put(nlh, NFQA_CFG_PARAMS, sizeof(params), &params);
 }
-EXPORT_SYMBOL(nfq_nlmsg_cfg_put_params);
 
 /**
  * nfq_nlmsg_cfg_put_qmaxlen Add queue maximum length to netlink message
  * \param nlh Pointer to netlink message
  * \param queue_maxlen Maximum queue length
  */
+EXPORT_SYMBOL
 void nfq_nlmsg_cfg_put_qmaxlen(struct nlmsghdr *nlh, uint32_t queue_maxlen)
 {
 	mnl_attr_put_u32(nlh, NFQA_CFG_QUEUE_MAXLEN, htonl(queue_maxlen));
 }
-EXPORT_SYMBOL(nfq_nlmsg_cfg_put_qmaxlen);
 
 /**
  * @}
@@ -197,12 +197,12 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
  * This function returns MNL_CB_ERROR if any error occurs, or MNL_CB_OK on
  * success.
  */
+EXPORT_SYMBOL
 int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr)
 {
 	return mnl_attr_parse(nlh, sizeof(struct nfgenmsg),
 			      nfq_pkt_parse_attr_cb, attr);
 }
-EXPORT_SYMBOL(nfq_nlmsg_parse);
 
 /**
  * @}

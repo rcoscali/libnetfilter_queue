@@ -36,6 +36,7 @@
  * This function returns NULL if invalid UDP header is found. On success,
  * it returns the UDP header.
  */
+EXPORT_SYMBOL
 struct udphdr *nfq_udp_get_hdr(struct pkt_buff *pktb)
 {
 	if (pktb->transport_header == NULL)
@@ -47,13 +48,13 @@ struct udphdr *nfq_udp_get_hdr(struct pkt_buff *pktb)
 
 	return (struct udphdr *)pktb->transport_header;
 }
-EXPORT_SYMBOL(nfq_udp_get_hdr);
 
 /**
  * nfq_udp_get_payload - get the UDP packet payload.
  * \param udph: Pointer to UDP header
  * \param pktb: Pointer to network packet buffer
  */
+EXPORT_SYMBOL
 void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 {
 	uint16_t len = ntohs(udph->len);
@@ -68,18 +69,17 @@ void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 
 	return pktb->transport_header + sizeof(struct udphdr);
 }
-EXPORT_SYMBOL(nfq_udp_get_payload);
 
 /**
  * nfq_udp_get_payload_len - get the udp packet payload.
  * \param udph: Pointer to UDP header
  * \param pktb: Pointer to network packet buffer
  */
+EXPORT_SYMBOL
 unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
 {
 	return pktb->tail - pktb->transport_header;
 }
-EXPORT_SYMBOL(nfq_udp_get_payload_len);
 
 /**
  * nfq_udp_set_checksum_ipv4 - computes a IPv4/TCP packet's segment
@@ -91,14 +91,13 @@ EXPORT_SYMBOL(nfq_udp_get_payload_len);
  * \see nfq_pkt_compute_ip_checksum
  * \see nfq_pkt_compute_udp_checksum
  */
-void
-nfq_udp_compute_checksum_ipv4(struct udphdr *udph, struct iphdr *iph)
+EXPORT_SYMBOL
+void nfq_udp_compute_checksum_ipv4(struct udphdr *udph, struct iphdr *iph)
 {
 	/* checksum field in header needs to be zero for calculation. */
 	udph->check = 0;
 	udph->check = nfq_checksum_tcpudp_ipv4(iph, IPPROTO_UDP);
 }
-EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv4);
 
 /**
  * nfq_udp_set_checksum_ipv6 - computes a IPv6/TCP packet's segment
@@ -110,14 +109,13 @@ EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv4);
  * \see nfq_pkt_compute_ip_checksum
  * \see nfq_pkt_compute_udp_checksum
  */
-void
-nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
+EXPORT_SYMBOL
+void nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
 {
 	/* checksum field in header needs to be zero for calculation. */
 	udph->check = 0;
 	udph->check = nfq_checksum_tcpudp_ipv6(ip6h, udph, IPPROTO_UDP);
 }
-EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv6);
 
 /**
  * nfq_udp_mangle_ipv4 - Mangle UDP/IPv4 packet buffer
@@ -131,10 +129,10 @@ EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv6);
  * \note This function updates the IPv4 and UDP lengths and recalculates their
  * checksums for you.
  */
-int
-nfq_udp_mangle_ipv4(struct pkt_buff *pkt,
-		    unsigned int match_offset, unsigned int match_len,
-		    const char *rep_buffer, unsigned int rep_len)
+EXPORT_SYMBOL
+int nfq_udp_mangle_ipv4(struct pkt_buff *pkt,
+			unsigned int match_offset, unsigned int match_len,
+			const char *rep_buffer, unsigned int rep_len)
 {
 	struct iphdr *iph;
 	struct udphdr *udph;
@@ -152,7 +150,6 @@ nfq_udp_mangle_ipv4(struct pkt_buff *pkt,
 
 	return 1;
 }
-EXPORT_SYMBOL(nfq_udp_mangle_ipv4);
 
 /**
  * nfq_pkt_snprintf_udp_hdr - print udp header into one buffer in a humnan
@@ -162,12 +159,12 @@ EXPORT_SYMBOL(nfq_udp_mangle_ipv4);
  * \param udp: pointer to a valid udp header.
  *
  */
+EXPORT_SYMBOL
 int nfq_udp_snprintf(char *buf, size_t size, const struct udphdr *udph)
 {
 	return snprintf(buf, size, "SPT=%u DPT=%u ",
 			htons(udph->source), htons(udph->dest));
 }
-EXPORT_SYMBOL(nfq_udp_snprintf);
 
 /**
  * @}
