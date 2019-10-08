@@ -30,6 +30,16 @@
  * @{
  */
 
+/**
+ * nfq_nlmsg_verdict_put - Put a verdict into a Netlink header
+ * \param nlh Pointer to netlink message
+ * \param id ID assigned to packet by netfilter
+ * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
+ *
+ * See examples/nf-queue.c, line 46 for an example of how to use this function.
+ * The calling sequence is \b main --> \b mnl_cb_run --> \b queue_cb -->
+ * \b nfq_send_verdict --> \b nfq_nlmsg_verdict_put
+ */
 void nfq_nlmsg_verdict_put(struct nlmsghdr *nlh, int id, int verdict)
 {
 	struct nfqnl_msg_verdict_hdr vh = {
@@ -63,13 +73,10 @@ EXPORT_SYMBOL(nfq_nlmsg_verdict_put_pkt);
  */
 
 /**
- * nfq_nlmsg_cfg_build_request- build netlink config message
- * \param buf Buffer where netlink message is going to be written.
- * \param cfg Structure that contains the config parameters.
- * \param command nfqueue nfnetlink command.
- *
- * This function returns a pointer to the netlink message. If something goes
- * wrong it returns NULL.
+ * nfq_nlmsg_cfg_put_cmd Add netlink config command to netlink message
+ * \param nlh Pointer to netlink message
+ * \param pf Packet family (e.g. AF_INET)
+ * \param cmd nfqueue nfnetlink command.
  *
  * Possible commands are:
  *
@@ -95,6 +102,12 @@ void nfq_nlmsg_cfg_put_cmd(struct nlmsghdr *nlh, uint16_t pf, uint8_t cmd)
 }
 EXPORT_SYMBOL(nfq_nlmsg_cfg_put_cmd);
 
+/**
+ * nfq_nlmsg_cfg_put_params Add parameter to netlink message
+ * \param nlh Pointer to netlink message
+ * \param mode one of NFQNL_COPY_NONE, NFQNL_COPY_META or NFQNL_COPY_PACKET
+ * \param range value of parameter
+ */
 void nfq_nlmsg_cfg_put_params(struct nlmsghdr *nlh, uint8_t mode, int range)
 {
 	struct nfqnl_msg_config_params params = {
@@ -105,6 +118,11 @@ void nfq_nlmsg_cfg_put_params(struct nlmsghdr *nlh, uint8_t mode, int range)
 }
 EXPORT_SYMBOL(nfq_nlmsg_cfg_put_params);
 
+/**
+ * nfq_nlmsg_cfg_put_qmaxlen Add queue maximum length to netlink message
+ * \param nlh Pointer to netlink message
+ * \param queue_maxlen Maximum queue length
+ */
 void nfq_nlmsg_cfg_put_qmaxlen(struct nlmsghdr *nlh, uint32_t queue_maxlen)
 {
 	mnl_attr_put_u32(nlh, NFQA_CFG_QUEUE_MAXLEN, htonl(queue_maxlen));
@@ -172,9 +190,9 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
 }
 
 /**
- * nfq_pkt_parse - set packet attributes from netlink message
+ * nfq_nlmsg_parse - set packet attributes from netlink message
  * \param nlh netlink message that you want to read.
- * \param pkt pointer to the packet to set.
+ * \param attr pointer to array of attributes to set.
  *
  * This function returns MNL_CB_ERROR if any error occurs, or MNL_CB_OK on
  * success.

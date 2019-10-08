@@ -59,6 +59,10 @@ EXPORT_SYMBOL(nfq_ip_get_hdr);
  * nfq_ip_set_transport_header - set transport header
  * \param pktb: pointer to network packet buffer
  * \param iph: pointer to the IPv4 header
+ *
+ * Sets the \b transport_header field in \b pktb
+ *
+ * Level 4 helper functions need this to be set.
  */
 int nfq_ip_set_transport_header(struct pkt_buff *pktb, struct iphdr *iph)
 {
@@ -97,8 +101,9 @@ EXPORT_SYMBOL(nfq_ip_set_checksum);
  * \param match_len: length of the existing content you want to mangle
  * \param rep_buffer: pointer to data you want to use to replace current content
  * \param rep_len: length of data you want to use to replace current content
- *
- * \note This function recalculates the IPv4 checksum (if needed).
+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
+ * \note This function updates the IPv4 length and recalculates the IPv4
+ * checksum (if necessary)
  */
 int nfq_ip_mangle(struct pkt_buff *pkt, unsigned int dataoff,
 		  unsigned int match_offset, unsigned int match_len,

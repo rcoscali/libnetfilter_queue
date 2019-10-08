@@ -31,8 +31,7 @@
 
 /**
  * nfq_udp_get_hdr - get the UDP header.
- * \param head: pointer to the beginning of the packet
- * \param tail: pointer to the tail of the packet
+ * \param pktb: Pointer to network packet buffer
  *
  * This function returns NULL if invalid UDP header is found. On success,
  * it returns the UDP header.
@@ -52,8 +51,8 @@ EXPORT_SYMBOL(nfq_udp_get_hdr);
 
 /**
  * nfq_udp_get_payload - get the UDP packet payload.
- * \param udph: the pointer to the UDP header.
- * \param tail: pointer to the tail of the packet
+ * \param udph: Pointer to UDP header
+ * \param pktb: Pointer to network packet buffer
  */
 void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 {
@@ -73,7 +72,8 @@ EXPORT_SYMBOL(nfq_udp_get_payload);
 
 /**
  * nfq_udp_get_payload_len - get the udp packet payload.
- * \param udp: the pointer to the udp header.
+ * \param udph: Pointer to UDP header
+ * \param pktb: Pointer to network packet buffer
  */
 unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
 {
@@ -120,14 +120,16 @@ nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
 EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv6);
 
 /**
- * nfq_tcp_mangle_ipv4 - mangle TCP/IPv4 packet buffer
- * \param pktb: pointer to network packet buffer
- * \param match_offset: offset to content that you want to mangle
- * \param match_len: length of the existing content you want to mangle
- * \param rep_buffer: pointer to data you want to use to replace current content 
- * \param rep_len: length of data you want to use to replace current content
- *
- * \note This function recalculates the IPv4 and TCP checksums for you.
+ * nfq_udp_mangle_ipv4 - Mangle UDP/IPv4 packet buffer
+ * \param pktb: Pointer to network packet buffer
+ * \param match_offset: Offset from start of UDP data of content that you want
+ * to mangle
+ * \param match_len: Length of the existing content you want to mangle
+ * \param rep_buffer: Pointer to data you want to use to replace current content
+ * \param rep_len: Length of data you want to use to replace current content
+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
+ * \note This function updates the IPv4 and UDP lengths and recalculates their
+ * checksums for you.
  */
 int
 nfq_udp_mangle_ipv4(struct pkt_buff *pkt,

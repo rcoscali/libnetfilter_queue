@@ -36,7 +36,7 @@
  * \param extra Extra memory in the tail to be allocated (for mangling)
  *
  * This function returns a packet buffer that contains the packet data and
- * some extra memory room in the tail (in case of requested).
+ * some extra memory room in the tail (if requested).
  *
  * \return a pointer to a new queue handle or NULL on failure.
  */
@@ -224,6 +224,19 @@ static int enlarge_pkt(struct pkt_buff *pkt, unsigned int extra)
 	return 1;
 }
 
+/**
+ * pktb_mangle - adjust contents of a packet
+ * \param pkt Pointer to packet buffer
+ * \param dataoff Offset to layer 3 header. Specify zero to access layer 2 (IP)
+ * header
+ * \param match_offset Further offset to content that you want to mangle
+ * \param match_len Length of the existing content you want to mangle
+ * \param rep_buffer Pointer to data you want to use to replace current content
+ * \param rep_len Length of data you want to use to replace current content
+ * \returns 1 for success and 0 for failure. Failure will occur if the \b extra
+ * argument to the pktb_alloc() call that created \b pkt is less than the excess
+ * of \b rep_len over \b match_len
+ */
 int pktb_mangle(struct pkt_buff *pkt,
 		 unsigned int dataoff,
 		 unsigned int match_offset,
