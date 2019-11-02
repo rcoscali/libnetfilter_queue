@@ -510,7 +510,7 @@ int nfq_unbind_pf(struct nfq_handle *h, uint16_t pf)
  * The nfq_callback type is defined in libnetfilter_queue.h as:
  * \verbatim
 typedef int nfq_callback(struct nfq_q_handle *qh,
-		    	 struct nfgenmsg *nfmsg,
+			 struct nfgenmsg *nfmsg,
 			 struct nfq_data *nfad, void *data);
 \endverbatim
  *
@@ -831,7 +831,7 @@ static int __set_verdict(struct nfq_q_handle *qh, uint32_t id,
 	int id;
 	struct nfqnl_msg_packet_hdr *ph = nfq_get_msg_packet_hdr(tb);
 	if (ph)
- 		id = ntohl(ph->packet_id);
+		id = ntohl(ph->packet_id);
 \endverbatim
  *
  * Notifies netfilter of the userspace verdict for the given packet.  Every
@@ -1077,15 +1077,15 @@ uint32_t nfq_get_physoutdev(struct nfq_data *nfad)
  * during all your program life:
  * \verbatim
 	h = nlif_open();
- 	if (h == NULL) {
- 		perror("nlif_open");
- 		exit(EXIT_FAILURE);
- 	}
+	if (h == NULL) {
+		perror("nlif_open");
+		exit(EXIT_FAILURE);
+	}
 \endverbatim
  * Once the handler is open, you need to fetch the interface table at a
  * whole via a call to nlif_query.
  * \verbatim
-  	nlif_query(h);
+	nlif_query(h);
 \endverbatim
  * libnfnetlink is able to update the interface mapping when a new interface
  * appears. To do so, you need to call nlif_catch() on the handler after each
@@ -1093,11 +1093,11 @@ uint32_t nfq_get_physoutdev(struct nfq_data *nfad)
  * a select() or poll() against the nlif file descriptor. To get this file 
  * descriptor, you need to use nlif_fd:
  * \verbatim
- 	if_fd = nlif_fd(h);
+	if_fd = nlif_fd(h);
 \endverbatim
  * Don't forget to close the handler when you don't need the feature anymore:
  * \verbatim
- 	nlif_close(h);
+	nlif_close(h);
 \endverbatim
  *
  */
