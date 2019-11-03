@@ -50,7 +50,7 @@ nfq_send_verdict(int queue_num, uint32_t id)
 
 	/* then, add the connmark attribute: */
 	mnl_attr_put_u32(nlh, CTA_MARK, htonl(42));
-	/* more conntrack attributes, e.g. CTA_LABEL, could be set here */
+	/* more conntrack attributes, e.g. CTA_LABELS could be set here */
 
 	/* end conntrack section */
 	mnl_attr_nest_end(nlh, nest);
