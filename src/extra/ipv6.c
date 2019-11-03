@@ -28,10 +28,9 @@
 
 /**
  * nfq_ip6_get_hdr - get IPv6 header
- * \param pktb: pointer to user-space network packet buffer
+ * \param pktb: Pointer to user-space network packet buffer
  *
- * This funcion returns NULL if an invalid header is found. On sucess, it
- * returns a valid pointer to the header.
+ * \returns pointer to IPv6 header if a valid header found, else NULL.
  */
 EXPORT_SYMBOL
 struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb)
@@ -39,7 +38,7 @@ struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb)
 	struct ip6_hdr *ip6h;
 	unsigned int pktlen = pktb->tail - pktb->network_header;
 
-	/* Not enough room for IPv4 header. */
+	/* Not enough room for IPv6 header. */
 	if (pktlen < sizeof(struct ip6_hdr))
 		return NULL;
 
@@ -54,12 +53,12 @@ struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb)
 
 /**
  * nfq_ip6_set_transport_header - set transport header pointer for IPv6 packet
- * \param pktb: pointer to user-space network packet buffer
- * \param ip6h: pointer to IPv6 header
- * \param target: protocol number to find transport header (ie. IPPROTO_*)
+ * \param pktb: Pointer to user-space network packet buffer
+ * \param ip6h: Pointer to IPv6 header
+ * \param target: Protocol number to find transport header (ie. IPPROTO_*)
  *
- * This function returns 1 if the protocol has been found and the transport
- * header has been set. Otherwise, it returns 0.
+ * \returns 1 if the protocol has been found and the transport
+ * header has been set, else 0.
  */
 EXPORT_SYMBOL
 int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
@@ -119,9 +118,11 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
 
 /**
  * nfq_ip6_snprintf - print IPv6 header into one buffer in iptables LOG format
- * \param buf: pointer to buffer that is used to print the object
- * \param size: size of the buffer (or remaining room in it).
- * \param ip6_hdr: pointer to a valid IPv6 header.
+ * \param buf: Pointer to buffer that is used to print the object
+ * \param size: Size of the buffer (or remaining room in it).
+ * \param ip6h: Pointer to a valid IPv6 header.
+ * \returns same as snprintf
+ * \sa **snprintf**(3)
  *
  */
 EXPORT_SYMBOL
