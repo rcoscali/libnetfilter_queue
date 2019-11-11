@@ -63,6 +63,7 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 
 	switch(family) {
 	case AF_INET:
+	case AF_INET6:
 		pktb->network_header = pktb->data;
 		break;
 	case AF_BRIDGE: {
