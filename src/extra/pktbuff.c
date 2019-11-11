@@ -156,6 +156,7 @@ EXPORT_SYMBOL
 void pktb_trim(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->len = len;
+	pktb->tail = pktb->head + len;
 }
 
 /**
