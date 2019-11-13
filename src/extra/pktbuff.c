@@ -73,6 +73,7 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 
 		switch(ethhdr->h_proto) {
 		case ETH_P_IP:
+		case ETH_P_IPV6:
 			pktb->network_header = pktb->data + ETH_HLEN;
 			break;
 		default:
