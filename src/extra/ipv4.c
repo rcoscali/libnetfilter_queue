@@ -117,7 +117,7 @@ int nfq_ip_mangle(struct pkt_buff *pktb, unsigned int dataoff,
 		return 0;
 
 	/* fix IP hdr checksum information */
-	iph->tot_len = htons(pktb->len);
+	iph->tot_len = htons(pktb->tail - pktb->network_header);
 	nfq_ip_set_checksum(iph);
 
 	return 1;
