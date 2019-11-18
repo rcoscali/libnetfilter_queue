@@ -111,7 +111,7 @@ uint8_t *pktb_data(struct pkt_buff *pktb)
 }
 
 /**
- * pktb_len - return length of the packet buffer
+ * pktb_len - get length of packet buffer
  * \param pktb Pointer to userspace packet buffer
  * \return Length of packet contained within __pktb__
  * \par
