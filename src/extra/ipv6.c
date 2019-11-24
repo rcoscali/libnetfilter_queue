@@ -45,7 +45,7 @@ struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb)
 	ip6h = (struct ip6_hdr *)pktb->network_header;
 
 	/* Not IPv6 packet. */
-	if (ip6h->ip6_flow != 0x60)
+	if ((*(uint8_t *)ip6h & 0xf0) != 0x60)
 		return NULL;
 
 	return ip6h;
