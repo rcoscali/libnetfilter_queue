@@ -78,7 +78,7 @@ void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 EXPORT_SYMBOL
 unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
 {
-	return pktb->tail - pktb->transport_header;
+	return pktb->tail - pktb->transport_header - sizeof(struct udphdr);
 }
 
 /**
