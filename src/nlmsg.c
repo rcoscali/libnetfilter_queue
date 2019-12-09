@@ -90,14 +90,13 @@ EXPORT_SYMBOL
 	pktb = pktb_alloc(AF_INET, payload, plen, 255);
 	// (decide that this packet needs mangling)
 	nfq_udp_mangle_ipv4(pktb, match_offset, match_len, rep_data, rep_len);
-	// Update IP Datagram length
-	plen += rep_len - match_len;
+	// nfq_udp_mangle_ipv4 updates packet length, no need to track locally
 
 	// Eventually nfq_send_verdict (line 39) gets called
 	// The received packet may or may not have been modified.
 	// Add this code before nfq_nlmsg_verdict_put call:
 	if (pktb_mangled(pktb))
-		nfq_nlmsg_verdict_put_pkt(nlh, pktb_data(pktb), plen);
+		nfq_nlmsg_verdict_put_pkt(nlh, pktb_data(pktb), pktb_len(pktb));
 \endverbatim
  */
 void nfq_nlmsg_verdict_put_pkt(struct nlmsghdr *nlh, const void *pkt,
