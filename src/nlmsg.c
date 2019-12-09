@@ -34,11 +34,39 @@
  * nfq_nlmsg_verdict_put - Put a verdict into a Netlink message
  * \param nlh Pointer to netlink message
  * \param id ID assigned to packet by netfilter
- * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
+ * \param verdict verdict to return to netfilter (see \b Verdicts below)
+ * \par Verdicts
+ * __NF_DROP__ Drop the packet. This is final.
+ * \n
+ * __NF_ACCEPT__ Accept the packet. Processing of the current base chain
+ * and any called chains terminates,
+ * but the packet may still be processed by subsequently invoked base chains.
+ * \n
+ * __NF_STOP__ Like __NF_ACCEPT__, but skip any further base chains using the
+ * current hook.
+ * \n
+ * __NF_REPEAT__ Like __NF_ACCEPT__, but re-queue this packet to the
+ * current base chain. One way to prevent a re-queueing loop is to
+ * also set a packet mark using nfq_nlmsg_verdict_put_mark() and have the
+ * program test for this mark in \c attr[NFQA_MARK]; or have the nefilter rules
+ * do this test.
+ * \n
+ * __NF_QUEUE_NR__(*new_queue*) Like __NF_ACCEPT__, but queue this packet to
+ * queue number *new_queue*. As with the command-line \b queue \b num verdict,
+ * if no process is listening to that queue then the packet is discarded; but
+ * again like with the command-line, one may OR in a flag to bypass *new_queue*
+ *  if there is no listener, as in this snippet:
+ * \verbatim
+       nfq_nlmsg_verdict_put(nlh, id, NF_QUEUE_NR(new_queue) |
+	       NF_VERDICT_FLAG_QUEUE_BYPASS);
+\endverbatim
  *
- * See examples/nf-queue.c, line 46 for an example of how to use this function.
+ * See examples/nf-queue.c, line
+ * <a class="el" href="nf-queue_8c_source.html#l00046">46</a>
+ * for an example of how to use this function in context.
  * The calling sequence is \b main --> \b mnl_cb_run --> \b queue_cb -->
  * \b nfq_send_verdict --> \b nfq_nlmsg_verdict_put
+ * (\b cb being short for \b callback).
  */
 EXPORT_SYMBOL
 void nfq_nlmsg_verdict_put(struct nlmsghdr *nlh, int id, int verdict)
