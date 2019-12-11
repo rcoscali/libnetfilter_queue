@@ -31,10 +31,9 @@
 
 /**
  * nfq_udp_get_hdr - get the UDP header.
- * \param pktb: Pointer to network packet buffer
+ * \param pktb: Pointer to userspace network packet buffer
  *
- * This function returns NULL if invalid UDP header is found. On success,
- * it returns the UDP header.
+ * \returns Pointer to the UDP header, or NULL if no valid UDP header is found.
  */
 EXPORT_SYMBOL
 struct udphdr *nfq_udp_get_hdr(struct pkt_buff *pktb)
@@ -52,7 +51,8 @@ struct udphdr *nfq_udp_get_hdr(struct pkt_buff *pktb)
 /**
  * nfq_udp_get_payload - get the UDP packet payload.
  * \param udph: Pointer to UDP header
- * \param pktb: Pointer to network packet buffer
+ * \param pktb: Pointer to userspace network packet buffer
+ * \returns Pointer to the UDP payload, or NULL if malformed UDP packet.
  */
 EXPORT_SYMBOL
 void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
@@ -73,7 +73,8 @@ void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 /**
  * nfq_udp_get_payload_len - get the udp packet payload.
  * \param udph: Pointer to UDP header
- * \param pktb: Pointer to network packet buffer
+ * \param pktb: Pointer to userspace network packet buffer
+ * \returns Length of UDP payload (user data)
  */
 EXPORT_SYMBOL
 unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
@@ -82,14 +83,22 @@ unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
 }
 
 /**
- * nfq_udp_set_checksum_ipv4 - computes a IPv4/TCP packet's segment
- * \param iphdrp: pointer to the ip header
- * \param ippayload: payload of the ip packet
+ * \defgroup internals Internal functions
  *
- * \returns the checksum of the udp segment.
+ * Most user-space programs will never need these.
  *
- * \see nfq_pkt_compute_ip_checksum
- * \see nfq_pkt_compute_udp_checksum
+ * @{
+ */
+
+/**
+ * nfq_udp_compute_checksum_ipv4 - sets up the UDP checksum in a UDP/IPv4 packet
+ * \param udph: pointer to the UDP header
+ * \param iph: pointer to the IPv4 header
+ * \note
+ * nfq_udp_mangle_ipv4() invokes this function.
+ * As long as developers always use __nfq_udp_mangle_ipv4__ when changing the
+ * content of a UDP message, there is no need to call
+ * __nfq_udp_compute_checksum_ipv4__.
  */
 EXPORT_SYMBOL
 void nfq_udp_compute_checksum_ipv4(struct udphdr *udph, struct iphdr *iph)
@@ -100,14 +109,13 @@ void nfq_udp_compute_checksum_ipv4(struct udphdr *udph, struct iphdr *iph)
 }
 
 /**
- * nfq_udp_set_checksum_ipv6 - computes a IPv6/TCP packet's segment
- * \param iphdrp: pointer to the ip header
- * \param ippayload: payload of the ip packet
- *
- * \returns the checksum of the udp segment.
- *
- * \see nfq_pkt_compute_ip_checksum
- * \see nfq_pkt_compute_udp_checksum
+ * @}
+ */
+
+/**
+ * nfq_udp_compute_checksum_ipv6 - sets up the UDP checksum in a UDP/IPv6 packet
+ * \param udph: pointer to the UDP header
+ * \param ip6h: pointer to the IPv6 header
  */
 EXPORT_SYMBOL
 void nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
@@ -156,7 +164,9 @@ int nfq_udp_mangle_ipv4(struct pkt_buff *pktb,
  * readable way
  * \param buf: pointer to buffer that is used to print the object
  * \param size: size of the buffer (or remaining room in it).
- * \param udp: pointer to a valid udp header.
+ * \param udph: pointer to a valid udp header.
+ * \returns The number of characters notionally written (excluding trailing NUL)
+ * \sa __snprintf__(3)
  *
  */
 EXPORT_SYMBOL
