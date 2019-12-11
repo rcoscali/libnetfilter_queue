@@ -130,19 +130,19 @@ void nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
  * checksums for you.
  */
 EXPORT_SYMBOL
-int nfq_udp_mangle_ipv4(struct pkt_buff *pkt,
+int nfq_udp_mangle_ipv4(struct pkt_buff *pktb,
 			unsigned int match_offset, unsigned int match_len,
 			const char *rep_buffer, unsigned int rep_len)
 {
 	struct iphdr *iph;
 	struct udphdr *udph;
 
-	iph = (struct iphdr *)pkt->network_header;
-	udph = (struct udphdr *)(pkt->network_header + iph->ihl*4);
+	iph = (struct iphdr *)pktb->network_header;
+	udph = (struct udphdr *)(pktb->network_header + iph->ihl*4);
 
 	udph->len = htons(ntohs(udph->len) + rep_len - match_len);
 
-	if (!nfq_ip_mangle(pkt, iph->ihl*4 + sizeof(struct udphdr),
+	if (!nfq_ip_mangle(pktb, iph->ihl*4 + sizeof(struct udphdr),
 				match_offset, match_len, rep_buffer, rep_len))
 		return 0;
 
