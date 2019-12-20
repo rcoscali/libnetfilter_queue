@@ -62,21 +62,21 @@ uint16_t nfq_checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr,
 				  uint16_t protonum)
 {
 	uint32_t sum = 0;
-	uint32_t hdr_len = (uint32_t *)transport_hdr - (uint32_t *)ip6h;
-	uint32_t len = ip6h->ip6_plen - hdr_len;
+	uint32_t hdr_len = (uint8_t *)transport_hdr - (uint8_t *)ip6h;
+	/* Allow for extra headers before the UDP header */
+	/* TODO: Deal with routing headers */
+	uint32_t len = ntohs(ip6h->ip6_plen) - (hdr_len - sizeof *ip6h);
 	uint8_t *payload = (uint8_t *)ip6h + hdr_len;
 	int i;
 
 	for (i=0; i<8; i++) {
-		sum += (ip6h->ip6_src.s6_addr16[i] >> 16) & 0xFFFF;
 		sum += (ip6h->ip6_src.s6_addr16[i]) & 0xFFFF;
 	}
 	for (i=0; i<8; i++) {
-		sum += (ip6h->ip6_dst.s6_addr16[i] >> 16) & 0xFFFF;
 		sum += (ip6h->ip6_dst.s6_addr16[i]) & 0xFFFF;
 	}
 	sum += htons(protonum);
-	sum += htons(ip6h->ip6_plen);
+	sum += htons(len);
 
 	return nfq_checksum(sum, (uint16_t *)payload, len);
 }
