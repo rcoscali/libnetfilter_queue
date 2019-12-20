@@ -117,6 +117,35 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
 }
 
 /**
+ * nfq_ip6_mangle - mangle IPv6 packet buffer
+ * \param pktb: Pointer to user-space network packet buffer
+ * \param dataoff: Offset to layer 4 header
+ * \param match_offset: Offset to content that you want to mangle
+ * \param match_len: Length of the existing content you want to mangle
+ * \param rep_buffer: Pointer to data you want to use to replace current content
+ * \param rep_len: Length of data you want to use to replace current content
+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
+ * \note This function updates the IPv6 length (if necessary)
+ */
+EXPORT_SYMBOL
+int nfq_ip6_mangle(struct pkt_buff *pktb, unsigned int dataoff,
+		   unsigned int match_offset, unsigned int match_len,
+		   const char *rep_buffer, unsigned int rep_len)
+{
+	struct ip6_hdr *ip6h = (struct ip6_hdr *)pktb->network_header;
+
+	if (!pktb_mangle(pktb, dataoff, match_offset, match_len, rep_buffer,
+			 rep_len))
+		return 0;
+
+	/* Fix IPv6 hdr length information */
+	ip6h->ip6_plen =
+		htons(pktb->tail - pktb->network_header - sizeof *ip6h);
+
+	return 1;
+}
+
+/**
  * nfq_ip6_snprintf - print IPv6 header into one buffer in iptables LOG format
  * \param buf: Pointer to buffer that is used to print the object
  * \param size: Size of the buffer (or remaining room in it).

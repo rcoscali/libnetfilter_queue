@@ -21,6 +21,7 @@
 #include <libnetfilter_queue/libnetfilter_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue_tcp.h>
 #include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
+#include <libnetfilter_queue/libnetfilter_queue_ipv6.h>
 #include <libnetfilter_queue/pktbuff.h>
 
 #include "internal.h"
@@ -202,6 +203,45 @@ int nfq_tcp_mangle_ipv4(struct pkt_buff *pkt,
 		return 0;
 
 	nfq_tcp_compute_checksum_ipv4(tcph, iph);
+
+	return 1;
+}
+
+/**
+ * nfq_tcp_mangle_ipv6 - Mangle TCP/IPv6 packet buffer
+ * \param pktb: Pointer to network packet buffer
+ * \param match_offset: Offset from start of TCP data of content that you want
+ * to mangle
+ * \param match_len: Length of the existing content you want to mangle
+ * \param rep_buffer: Pointer to data you want to use to replace current content
+ * \param rep_len: Length of data you want to use to replace current content
+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
+ * \note This function updates the IPv6 length and recalculates the TCP
+ * checksum for you.
+ * \warning After changing the length of a TCP message, the application will
+ * need to mangle sequence numbers in both directions until another change
+ * puts them in sync again
+ */
+EXPORT_SYMBOL
+int nfq_tcp_mangle_ipv6(struct pkt_buff *pktb,
+			unsigned int match_offset, unsigned int match_len,
+			const char *rep_buffer, unsigned int rep_len)
+{
+	struct ip6_hdr *ip6h;
+	struct tcphdr *tcph;
+
+	ip6h = (struct ip6_hdr *)pktb->network_header;
+	tcph = (struct tcphdr *)(pktb->transport_header);
+	if (!tcph)
+		return 0;
+
+	if (!nfq_ip6_mangle(pktb,
+			   pktb->transport_header - pktb->network_header +
+			   tcph->doff * 4,
+			   match_offset, match_len, rep_buffer, rep_len))
+		return 0;
+
+	nfq_tcp_compute_checksum_ipv6(tcph, ip6h);
 
 	return 1;
 }
