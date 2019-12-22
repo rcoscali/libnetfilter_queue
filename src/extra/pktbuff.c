@@ -299,8 +299,10 @@ static int enlarge_pkt(struct pkt_buff *pkt, unsigned int extra)
 /**
  * pktb_mangle - adjust contents of a packet
  * \param pktb Pointer to userspace packet buffer
- * \param dataoff Offset to layer 4 header. Specify zero to access layer 3 (IP)
- * header (layer 2 for family \b AF_BRIDGE)
+ * \param dataoff Supplementary offset, usually offset from layer 3 (IP) header
+ * to the layer 4 (TCP or UDP) header. Specify zero to access the layer 3
+ * header. If \b pktb was created in family \b AF_BRIDGE, specify
+ * \b -ETH_HLEN (a negative offset) to access the layer 2 (MAC) header.
  * \param match_offset Further offset to content that you want to mangle
  * \param match_len Length of the existing content you want to mangle
  * \param rep_buffer Pointer to data you want to use to replace current content
@@ -316,7 +318,7 @@ static int enlarge_pkt(struct pkt_buff *pkt, unsigned int extra)
  */
 EXPORT_SYMBOL
 int pktb_mangle(struct pkt_buff *pktb,
-		unsigned int dataoff,
+		int dataoff,
 		unsigned int match_offset,
 		unsigned int match_len,
 		const char *rep_buffer,
