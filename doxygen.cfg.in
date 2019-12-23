@@ -56,7 +56,6 @@ GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       =
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = YES
-SHOW_DIRECTORIES       = NO
 FILE_VERSION_FILTER    =
 QUIET                  = NO
 WARNINGS               = YES
@@ -72,7 +71,12 @@ RECURSIVE              = YES
 EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       =
-EXCLUDE_SYMBOLS        = EXPORT_SYMBOL
+EXCLUDE_SYMBOLS        = EXPORT_SYMBOL \
+                         tcp_word_hdr \
+                         nfq_handle \
+                         nfq_data \
+                         nfq_q_handle \
+                         tcp_flag_word
 EXAMPLE_PATH           =
 EXAMPLE_PATTERNS       =
 EXAMPLE_RECURSIVE      = NO
@@ -96,7 +100,6 @@ HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            =
 HTML_STYLESHEET        =
-HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
@@ -135,8 +138,6 @@ MAN_EXTENSION          = .3
 MAN_LINKS              = NO
 GENERATE_XML           = NO
 XML_OUTPUT             = xml
-XML_SCHEMA             =
-XML_DTD                =
 XML_PROGRAMLISTING     = YES
 GENERATE_AUTOGEN_DEF   = NO
 GENERATE_PERLMOD       = NO
