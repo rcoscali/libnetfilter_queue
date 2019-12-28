@@ -87,7 +87,7 @@ unsigned int nfq_tcp_get_payload_len(struct tcphdr *tcph, struct pkt_buff *pktb)
 }
 
 /**
- * nfq_tcp_set_checksum_ipv4 - computes IPv4/TCP packet checksum
+ * nfq_tcp_compute_checksum_ipv4 - computes IPv4/TCP packet checksum
  * \param tcph: pointer to the TCP header
  * \param iph: pointer to the IPv4 header
  */
@@ -100,9 +100,9 @@ void nfq_tcp_compute_checksum_ipv4(struct tcphdr *tcph, struct iphdr *iph)
 }
 
 /**
- * nfq_tcp_set_checksum_ipv6 - computes IPv6/TCP packet checksum
+ * nfq_tcp_compute_checksum_ipv6 - computes IPv6/TCP packet checksum
  * \param tcph: pointer to the TCP header
- * \param iph: pointer to the IPv6 header
+ * \param ip6h: pointer to the IPv6 header
  */
 EXPORT_SYMBOL
 void nfq_tcp_compute_checksum_ipv6(struct tcphdr *tcph, struct ip6_hdr *ip6h)
@@ -129,7 +129,7 @@ union tcp_word_hdr {
  * readable way
  * \param buf: pointer to buffer that is used to print the object
  * \param size: size of the buffer (or remaining room in it).
- * \param tcp: pointer to a valid tcp header.
+ * \param tcph: pointer to a valid tcp header.
  *
  */
 EXPORT_SYMBOL
