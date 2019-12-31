@@ -188,17 +188,17 @@ int nfq_tcp_snprintf(char *buf, size_t size, const struct tcphdr *tcph)
  * \note This function recalculates the IPv4 and TCP checksums for you.
  */
 EXPORT_SYMBOL
-int nfq_tcp_mangle_ipv4(struct pkt_buff *pkt,
+int nfq_tcp_mangle_ipv4(struct pkt_buff *pktb,
 			unsigned int match_offset, unsigned int match_len,
 			const char *rep_buffer, unsigned int rep_len)
 {
 	struct iphdr *iph;
 	struct tcphdr *tcph;
 
-	iph = (struct iphdr *)pkt->network_header;
-	tcph = (struct tcphdr *)(pkt->network_header + iph->ihl*4);
+	iph = (struct iphdr *)pktb->network_header;
+	tcph = (struct tcphdr *)(pktb->network_header + iph->ihl*4);
 
-	if (!nfq_ip_mangle(pkt, iph->ihl*4 + tcph->doff*4,
+	if (!nfq_ip_mangle(pktb, iph->ihl*4 + tcph->doff*4,
 				match_offset, match_len, rep_buffer, rep_len))
 		return 0;
 
