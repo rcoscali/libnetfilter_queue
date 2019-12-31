@@ -70,10 +70,10 @@ uint16_t nfq_checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr,
 	int i;
 
 	for (i=0; i<8; i++) {
-		sum += (ip6h->ip6_src.s6_addr16[i]) & 0xFFFF;
+		sum += (ip6h->ip6_src.s6_addr16[i]);
 	}
 	for (i=0; i<8; i++) {
-		sum += (ip6h->ip6_dst.s6_addr16[i]) & 0xFFFF;
+		sum += (ip6h->ip6_dst.s6_addr16[i]);
 	}
 	sum += htons(protonum);
 	sum += htons(len);
