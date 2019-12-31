@@ -513,10 +513,10 @@ int nfq_unbind_pf(struct nfq_handle *h, uint16_t pf)
  * \return a nfq_q_handle pointing to the newly created queue
  *
  * Creates a new queue handle, and returns it.  The new queue is identified by
- * #num, and the callback specified by #cb will be called for each enqueued
- * packet.  The #data argument will be passed unchanged to the callback.  If
- * a queue entry with id #num already exists, this function will return failure
- * and the existing entry is unchanged.
+ * \b num, and the callback specified by \b cb will be called for each enqueued
+ * packet.  The \b data argument will be passed unchanged to the callback.  If
+ * a queue entry with id \b num already exists,
+ * this function will return failure and the existing entry is unchanged.
  *
  * The nfq_callback type is defined in libnetfilter_queue.h as:
  * \verbatim
@@ -651,7 +651,7 @@ int nfq_set_mode(struct nfq_q_handle *qh, uint8_t mode, uint32_t range)
  * nfq_set_queue_flags - set flags (options) for the kernel queue
  * \param qh Netfilter queue handle obtained by call to nfq_create_queue().
  * \param mask specifies which flag bits to modify
- * \param flag bitmask of flags
+ * \param flags bitmask of flags
  *
  * Existing flags, that you may want to combine, are:
  *
@@ -834,7 +834,7 @@ static int __set_verdict(struct nfq_q_handle *qh, uint32_t id,
  * \param qh Netfilter queue handle obtained by call to nfq_create_queue().
  * \param id	ID assigned to packet by netfilter.
  * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
- * \param data_len number of bytes of data pointed to by #buf
+ * \param data_len number of bytes of data pointed to by \b buf
  * \param buf the buffer that contains the packet data
  *
  * Can be obtained by:
@@ -867,7 +867,7 @@ int nfq_set_verdict(struct nfq_q_handle *qh, uint32_t id,
  * \param id	ID assigned to packet by netfilter.
  * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
  * \param mark mark to put on packet
- * \param data_len number of bytes of data pointed to by #buf
+ * \param data_len number of bytes of data pointed to by \b buf
  * \param buf the buffer that contains the packet data
  */
 EXPORT_SYMBOL
@@ -886,7 +886,7 @@ int nfq_set_verdict2(struct nfq_q_handle *qh, uint32_t id,
  * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
  *
  * Unlike nfq_set_verdict, the verdict is applied to all queued packets
- * whose packet id is smaller or equal to #id.
+ * whose packet id is smaller or equal to \b id.
  *
  * batch support was added in Linux 3.1.
  * These functions will fail silently on older kernels.
@@ -920,7 +920,7 @@ int nfq_set_verdict_batch2(struct nfq_q_handle *qh, uint32_t id,
  * \param id	ID assigned to packet by netfilter.
  * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
  * \param mark the mark to put on the packet, in network byte order.
- * \param data_len number of bytes of data pointed to by #buf
+ * \param data_len number of bytes of data pointed to by \b buf
  * \param buf the buffer that contains the packet data
  *
  * \return -1 on error; >= 0 otherwise.
@@ -1213,6 +1213,7 @@ struct nfqnl_msg_packet_hw *nfq_get_packet_hw(struct nfq_data *nfad)
 /**
  * nfq_get_uid - get the UID of the user the packet belongs to
  * \param nfad Netlink packet data handle passed to callback function
+ * \param uid Set to UID on return
  *
  * \warning If the NFQA_CFG_F_GSO flag is not set, then fragmented packets
  * may be pushed into the queue. In this case, only one fragment will have the
@@ -1233,6 +1234,7 @@ int nfq_get_uid(struct nfq_data *nfad, uint32_t *uid)
 /**
  * nfq_get_gid - get the GID of the user the packet belongs to
  * \param nfad Netlink packet data handle passed to callback function
+ * \param gid Set to GID on return
  *
  * \warning If the NFQA_CFG_F_GSO flag is not set, then fragmented packets
  * may be pushed into the queue. In this case, only one fragment will have the
