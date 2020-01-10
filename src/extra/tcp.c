@@ -32,14 +32,12 @@
  */
 
 /**
- * nfq_tcp_get - get the TCP header
+ * nfq_tcp_get_hdr - get the TCP header
  * \param pktb: pointer to user-space network packet buffer
- *
- * This function returns NULL if an invalid TCP header is found. On success,
- * it returns the TCP header.
- *
- * \note You have to call nfq_ip_set_transport_header or
- * nfq_ip6_set_transport_header first to access the TCP header.
+ * \returns validated pointer to the TCP header or NULL if the TCP header was
+ * not set or if a minimal length check fails.
+ * \note You have to call nfq_ip_set_transport_header() or
+ * nfq_ip6_set_transport_header() first to set the TCP header.
  */
 EXPORT_SYMBOL
 struct tcphdr *nfq_tcp_get_hdr(struct pkt_buff *pktb)
@@ -58,6 +56,7 @@ struct tcphdr *nfq_tcp_get_hdr(struct pkt_buff *pktb)
  * nfq_tcp_get_payload - get the TCP packet payload
  * \param tcph: pointer to the TCP header
  * \param pktb: pointer to user-space network packet buffer
+ * \returns Pointer to the TCP payload, or NULL if malformed TCP packet.
  */
 EXPORT_SYMBOL
 void *nfq_tcp_get_payload(struct tcphdr *tcph, struct pkt_buff *pktb)
@@ -79,6 +78,7 @@ void *nfq_tcp_get_payload(struct tcphdr *tcph, struct pkt_buff *pktb)
  * nfq_tcp_get_payload_len - get the tcp packet payload
  * \param tcph: pointer to the TCP header
  * \param pktb: pointer to user-space network packet buffer
+ * \returns Length of TCP payload (user data)
  */
 EXPORT_SYMBOL
 unsigned int nfq_tcp_get_payload_len(struct tcphdr *tcph, struct pkt_buff *pktb)
@@ -87,9 +87,22 @@ unsigned int nfq_tcp_get_payload_len(struct tcphdr *tcph, struct pkt_buff *pktb)
 }
 
 /**
+ * \defgroup tcp_internals Internal TCP functions
+ *
+ * Most user-space programs will never need these.
+ *
+ * @{
+ */
+
+/**
  * nfq_tcp_compute_checksum_ipv4 - computes IPv4/TCP packet checksum
  * \param tcph: pointer to the TCP header
  * \param iph: pointer to the IPv4 header
+ * \note
+ * nfq_tcp_mangle_ipv4() invokes this function.
+ * As long as developers always use __nfq_tcp_mangle_ipv4__ when changing the
+ * content of a TCP message, there is no need to call
+ * __nfq_tcp_compute_checksum_ipv4__.
  */
 EXPORT_SYMBOL
 void nfq_tcp_compute_checksum_ipv4(struct tcphdr *tcph, struct iphdr *iph)
@@ -103,6 +116,11 @@ void nfq_tcp_compute_checksum_ipv4(struct tcphdr *tcph, struct iphdr *iph)
  * nfq_tcp_compute_checksum_ipv6 - computes IPv6/TCP packet checksum
  * \param tcph: pointer to the TCP header
  * \param ip6h: pointer to the IPv6 header
+ * \note
+ * nfq_tcp_mangle_ipv6() invokes this function.
+ * As long as developers always use __nfq_tcp_mangle_ipv6__ when changing the
+ * content of a TCP message, there is no need to call
+ * __nfq_tcp_compute_checksum_ipv6__.
  */
 EXPORT_SYMBOL
 void nfq_tcp_compute_checksum_ipv6(struct tcphdr *tcph, struct ip6_hdr *ip6h)
@@ -111,6 +129,10 @@ void nfq_tcp_compute_checksum_ipv6(struct tcphdr *tcph, struct ip6_hdr *ip6h)
 	tcph->check = 0;
 	tcph->check = nfq_checksum_tcpudp_ipv6(ip6h, tcph, IPPROTO_TCP);
 }
+
+/**
+ * @}
+ */
 
 /*
  *	The union cast uses a gcc extension to avoid aliasing problems
@@ -130,6 +152,8 @@ union tcp_word_hdr {
  * \param buf: pointer to buffer that is used to print the object
  * \param size: size of the buffer (or remaining room in it).
  * \param tcph: pointer to a valid tcp header.
+ * \returns Same as \b snprintf
+ * \sa __snprintf__(3)
  *
  */
 EXPORT_SYMBOL
@@ -184,8 +208,12 @@ int nfq_tcp_snprintf(char *buf, size_t size, const struct tcphdr *tcph)
  * \param match_len: length of the existing content you want to mangle
  * \param rep_buffer: pointer to data you want to use to replace current content
  * \param rep_len: length of data you want to use to replace current content
- *
- * \note This function recalculates the IPv4 and TCP checksums for you.
+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
+ * \note This function updates the IPv4 length and recalculates the IPv4 & TCP
+ * checksums for you.
+ * \warning After changing the length of a TCP message, the application will
+ * need to mangle sequence numbers in both directions until another change
+ * puts them in sync again
  */
 EXPORT_SYMBOL
 int nfq_tcp_mangle_ipv4(struct pkt_buff *pktb,

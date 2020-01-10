@@ -34,7 +34,10 @@
  * nfq_udp_get_hdr - get the UDP header.
  * \param pktb: Pointer to userspace network packet buffer
  *
- * \returns Pointer to the UDP header, or NULL if no valid UDP header is found.
+ * \returns validated pointer to the UDP header or NULL if the UDP header was
+ * not set or if a minimal length check fails.
+ * \note You have to call nfq_ip_set_transport_header() or
+ * nfq_ip6_set_transport_header() first to set the UDP header.
  */
 EXPORT_SYMBOL
 struct udphdr *nfq_udp_get_hdr(struct pkt_buff *pktb)
@@ -84,7 +87,7 @@ unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
 }
 
 /**
- * \defgroup internals Internal functions
+ * \defgroup udp_internals Internal UDP functions
  *
  * Most user-space programs will never need these.
  *
@@ -110,13 +113,14 @@ void nfq_udp_compute_checksum_ipv4(struct udphdr *udph, struct iphdr *iph)
 }
 
 /**
- * @}
- */
-
-/**
  * nfq_udp_compute_checksum_ipv6 - sets up the UDP checksum in a UDP/IPv6 packet
  * \param udph: pointer to the UDP header
  * \param ip6h: pointer to the IPv6 header
+ * \note
+ * nfq_udp_mangle_ipv6() invokes this function.
+ * As long as developers always use __nfq_udp_mangle_ipv6__ when changing the
+ * content of a UDP message, there is no need to call
+ * __nfq_udp_compute_checksum_ipv6__.
  */
 EXPORT_SYMBOL
 void nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
@@ -125,6 +129,10 @@ void nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h)
 	udph->check = 0;
 	udph->check = nfq_checksum_tcpudp_ipv6(ip6h, udph, IPPROTO_UDP);
 }
+
+/**
+ * @}
+ */
 
 /**
  * nfq_udp_mangle_ipv4 - Mangle UDP/IPv4 packet buffer

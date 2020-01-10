@@ -263,9 +263,7 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
  * nfq_nlmsg_parse - set packet attributes from netlink message
  * \param nlh netlink message that you want to read.
  * \param attr pointer to array of attributes to set.
- *
- * This function returns MNL_CB_ERROR if any error occurs, or MNL_CB_OK on
- * success.
+ * \returns MNL_CB_OK on success or MNL_CB_ERROR if any error occurs.
  */
 EXPORT_SYMBOL
 int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr)
