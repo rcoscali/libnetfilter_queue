@@ -52,6 +52,7 @@ EXPORT_SYMBOL
 struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 {
 	struct pkt_buff *pktb;
+	struct ethhdr *ethhdr;
 	void *pkt_data;
 
 	pktb = calloc(1, sizeof(struct pkt_buff) + len + extra);
@@ -74,9 +75,8 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 	case AF_INET6:
 		pktb->network_header = pktb->data;
 		break;
-	case AF_BRIDGE: {
-		struct ethhdr *ethhdr = (struct ethhdr *)pktb->data;
-
+	case AF_BRIDGE:
+		ethhdr = (struct ethhdr *)pktb->data;
 		pktb->mac_header = pktb->data;
 
 		switch(ethhdr->h_proto) {
@@ -91,7 +91,6 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 			return NULL;
 		}
 		break;
-	}
 	}
 	return pktb;
 }
