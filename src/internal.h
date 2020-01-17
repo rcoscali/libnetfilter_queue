@@ -23,7 +23,6 @@ struct pkt_buff {
 	uint8_t *network_header;
 	uint8_t *transport_header;
 
-	uint8_t *head;
 	uint8_t *data;
 	uint8_t *tail;
 

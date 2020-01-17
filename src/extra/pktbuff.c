@@ -66,9 +66,8 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 	pktb->len = len;
 	pktb->data_len = len + extra;
 
-	pktb->head = pkt_data;
 	pktb->data = pkt_data;
-	pktb->tail = pktb->head + len;
+	pktb->tail = pktb->data + len;
 
 	switch(family) {
 	case AF_INET:
@@ -204,7 +203,7 @@ EXPORT_SYMBOL
 void pktb_trim(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->len = len;
-	pktb->tail = pktb->head + len;
+	pktb->tail = pktb->data + len;
 }
 
 /**
