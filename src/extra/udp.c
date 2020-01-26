@@ -46,7 +46,7 @@ struct udphdr *nfq_udp_get_hdr(struct pkt_buff *pktb)
 		return NULL;
 
 	/* No room for the UDP header. */
-	if (pktb->tail - pktb->transport_header < sizeof(struct udphdr))
+	if (pktb_tail(pktb) - pktb->transport_header < sizeof(struct udphdr))
 		return NULL;
 
 	return (struct udphdr *)pktb->transport_header;
@@ -68,7 +68,7 @@ void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 		return NULL;
 
 	/* malformed UDP packet. */
-	if (pktb->transport_header + len > pktb->tail)
+	if (pktb->transport_header + len > pktb_tail(pktb))
 		return NULL;
 
 	return pktb->transport_header + sizeof(struct udphdr);
@@ -83,7 +83,7 @@ void *nfq_udp_get_payload(struct udphdr *udph, struct pkt_buff *pktb)
 EXPORT_SYMBOL
 unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
 {
-	return pktb->tail - pktb->transport_header - sizeof(struct udphdr);
+	return pktb_tail(pktb) - pktb->transport_header - sizeof(struct udphdr);
 }
 
 /**

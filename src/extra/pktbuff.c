@@ -67,7 +67,6 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 	pktb->data_len = len + extra;
 
 	pktb->data = pkt_data;
-	pktb->tail = pktb->data + len;
 
 	switch(family) {
 	case AF_INET:
@@ -190,7 +189,6 @@ void pktb_pull(struct pkt_buff *pktb, unsigned int len)
 EXPORT_SYMBOL
 void pktb_put(struct pkt_buff *pktb, unsigned int len)
 {
-	pktb->tail += len;
 	pktb->len += len;
 }
 
@@ -203,7 +201,6 @@ EXPORT_SYMBOL
 void pktb_trim(struct pkt_buff *pktb, unsigned int len)
 {
 	pktb->len = len;
-	pktb->tail = pktb->data + len;
 }
 
 /**
@@ -279,7 +276,6 @@ static int pktb_expand_tail(struct pkt_buff *pktb, int extra)
 		return 0;
 
 	pktb->len += extra;
-	pktb->tail = pktb->tail + extra;
 	return 1;
 }
 
@@ -334,7 +330,7 @@ int pktb_mangle(struct pkt_buff *pktb,
 	/* move post-replacement */
 	memmove(data + match_offset + rep_len,
 		data + match_offset + match_len,
-		pktb->tail - (pktb->network_header + dataoff +
+		pktb_tail(pktb) - (pktb->network_header + dataoff +
 			     match_offset + match_len));
 
 	/* insert data from buffer */

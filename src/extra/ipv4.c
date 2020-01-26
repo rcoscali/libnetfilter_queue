@@ -40,7 +40,7 @@ EXPORT_SYMBOL
 struct iphdr *nfq_ip_get_hdr(struct pkt_buff *pktb)
 {
 	struct iphdr *iph;
-	unsigned int pktlen = pktb->tail - pktb->network_header;
+	unsigned int pktlen = pktb_tail(pktb) - pktb->network_header;
 
 	/* Not enough room for IPv4 header. */
 	if (pktlen < sizeof(struct iphdr))
@@ -135,7 +135,7 @@ int nfq_ip_mangle(struct pkt_buff *pktb, unsigned int dataoff,
 		return 0;
 
 	/* fix IP hdr checksum information */
-	iph->tot_len = htons(pktb->tail - pktb->network_header);
+	iph->tot_len = htons(pktb_tail(pktb) - pktb->network_header);
 	nfq_ip_set_checksum(iph);
 
 	return 1;

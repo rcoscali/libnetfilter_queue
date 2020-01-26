@@ -36,7 +36,7 @@ EXPORT_SYMBOL
 struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb)
 {
 	struct ip6_hdr *ip6h;
-	unsigned int pktlen = pktb->tail - pktb->network_header;
+	unsigned int pktlen = pktb_tail(pktb) - pktb->network_header;
 
 	/* Not enough room for IPv6 header. */
 	if (pktlen < sizeof(struct ip6_hdr))
@@ -77,7 +77,7 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
 			break;
 		}
 		/* No room for extension, bad packet. */
-		if (pktb->tail - cur < sizeof(struct ip6_ext)) {
+		if (pktb_tail(pktb) - cur < sizeof(struct ip6_ext)) {
 			cur = NULL;
 			break;
 		}
@@ -87,7 +87,7 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
 			uint16_t *frag_off;
 
 			/* No room for full fragment header, bad packet. */
-			if (pktb->tail - cur < sizeof(struct ip6_frag)) {
+			if (pktb_tail(pktb) - cur < sizeof(struct ip6_frag)) {
 				cur = NULL;
 				break;
 			}
@@ -140,7 +140,7 @@ int nfq_ip6_mangle(struct pkt_buff *pktb, unsigned int dataoff,
 
 	/* Fix IPv6 hdr length information */
 	ip6h->ip6_plen =
-		htons(pktb->tail - pktb->network_header - sizeof *ip6h);
+		htons(pktb_tail(pktb) - pktb->network_header - sizeof *ip6h);
 
 	return 1;
 }

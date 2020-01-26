@@ -46,7 +46,7 @@ struct tcphdr *nfq_tcp_get_hdr(struct pkt_buff *pktb)
 		return NULL;
 
 	/* No room for the TCP header. */
-	if (pktb->tail - pktb->transport_header < sizeof(struct tcphdr))
+	if (pktb_tail(pktb) - pktb->transport_header < sizeof(struct tcphdr))
 		return NULL;
 
 	return (struct tcphdr *)pktb->transport_header;
@@ -68,7 +68,7 @@ void *nfq_tcp_get_payload(struct tcphdr *tcph, struct pkt_buff *pktb)
 		return NULL;
 
 	/* malformed TCP data offset. */
-	if (pktb->transport_header + len > pktb->tail)
+	if (pktb->transport_header + len > pktb_tail(pktb))
 		return NULL;
 
 	return pktb->transport_header + len;
@@ -83,7 +83,7 @@ void *nfq_tcp_get_payload(struct tcphdr *tcph, struct pkt_buff *pktb)
 EXPORT_SYMBOL
 unsigned int nfq_tcp_get_payload_len(struct tcphdr *tcph, struct pkt_buff *pktb)
 {
-	return pktb->tail - pktb->transport_header - (tcph->doff * 4);
+	return pktb_tail(pktb) - pktb->transport_header - (tcph->doff * 4);
 }
 
 /**

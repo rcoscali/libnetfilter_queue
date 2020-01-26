@@ -24,7 +24,6 @@ struct pkt_buff {
 	uint8_t *transport_header;
 
 	uint8_t *data;
-	uint8_t *tail;
 
 	uint32_t len;
 	uint32_t data_len;
@@ -32,4 +31,8 @@ struct pkt_buff {
 	bool	mangled;
 };
 
+static inline uint8_t *pktb_tail(struct pkt_buff *pktb)
+{
+	return pktb->data + pktb->len;
+}
 #endif
