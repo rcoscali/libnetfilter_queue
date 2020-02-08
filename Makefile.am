@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = $(man_MANS) include/linux
 
-SUBDIRS = src utils include examples
+SUBDIRS = src utils include examples doxygen
 
 man_MANS = #nfnetlink_queue.3 nfnetlink_queue.7
 
