@@ -103,6 +103,7 @@ extern uint32_t nfq_get_indev(struct nfq_data *nfad);
 extern uint32_t nfq_get_physindev(struct nfq_data *nfad);
 extern uint32_t nfq_get_outdev(struct nfq_data *nfad);
 extern uint32_t nfq_get_physoutdev(struct nfq_data *nfad);
+extern uint32_t nfq_get_skbinfo(struct nfq_data *nfad);
 extern int nfq_get_uid(struct nfq_data *nfad, uint32_t *uid);
 extern int nfq_get_gid(struct nfq_data *nfad, uint32_t *gid);
 extern int nfq_get_secctx(struct nfq_data *nfad, unsigned char **secdata);

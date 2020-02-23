@@ -1211,6 +1211,37 @@ struct nfqnl_msg_packet_hw *nfq_get_packet_hw(struct nfq_data *nfad)
 }
 
 /**
+ * nfq_get_skbinfo - return the NFQA_SKB_INFO meta information
+ * \param nfad Netlink packet data handle passed to callback function
+ *
+ * This can be used to obtain extra information about a packet by testing
+ * the returned integer for any of the following bit flags:
+ *
+ * - NFQA_SKB_CSUMNOTREADY
+ *   packet header checksums will be computed by hardware later on, i.e.
+ *   tcp/ip checksums in the packet must not be validated, application
+ *   should pretend they are correct.
+ * - NFQA_SKB_GSO
+ *   packet is an aggregated super-packet.  It exceeds device mtu and will
+ *   be (re-)split on transmit by hardware.
+ * - NFQA_SKB_CSUM_NOTVERIFIED
+ *   packet checksum was not yet verified by the kernel/hardware, for
+ *   example because this is an incoming packet and the NIC does not
+ *   perform checksum validation at hardware level.
+ *
+ * \return the skbinfo value
+ * \sa __nfq_set_queue_flags__(3)
+ */
+EXPORT_SYMBOL
+uint32_t nfq_get_skbinfo(struct nfq_data *nfad)
+{
+	if (!nfnl_attr_present(nfad->data, NFQA_SKB_INFO))
+		return 0;
+
+	return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO, uint32_t));
+}
+
+/**
  * nfq_get_uid - get the UID of the user the packet belongs to
  * \param nfad Netlink packet data handle passed to callback function
  * \param uid Set to UID on return

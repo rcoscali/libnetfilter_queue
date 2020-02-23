@@ -11,8 +11,10 @@ function main
     add2group nfq_get_nfmark nfq_get_timestamp nfq_get_indev nfq_get_physindev
     add2group nfq_get_outdev nfq_get_physoutdev nfq_get_indev_name
     add2group nfq_get_physindev_name nfq_get_outdev_name
-    add2group nfq_get_physoutdev_name nfq_get_packet_hw nfq_get_uid
-    add2group nfq_get_gid nfq_get_secctx nfq_get_payload
+    add2group nfq_get_physoutdev_name nfq_get_packet_hw
+    add2group nfq_get_skbinfo
+    add2group nfq_get_uid nfq_get_gid
+    add2group nfq_get_secctx nfq_get_payload
   setgroup Queue nfq_fd
     add2group nfq_create_queue nfq_destroy_queue nfq_handle_packet nfq_set_mode
     add2group nfq_set_queue_flags nfq_set_queue_maxlen nfq_set_verdict
