@@ -261,15 +261,37 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
 
 /**
  * nfq_nlmsg_parse - set packet attributes from netlink message
- * \param nlh netlink message that you want to read.
- * \param attr pointer to array of attributes to set.
- * \returns MNL_CB_OK on success or MNL_CB_ERROR if any error occurs.
+ * \param nlh Pointer to netlink message
+ * \param attr Pointer to array of attributes to set
+ * \returns MNL_CB_OK on success or MNL_CB_ERROR if any error occurs
  */
 EXPORT_SYMBOL
 int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr)
 {
 	return mnl_attr_parse(nlh, sizeof(struct nfgenmsg),
 			      nfq_pkt_parse_attr_cb, attr);
+}
+
+/**
+ * nfq_nlmsg_put - Convert memory buffer into a Netlink buffer
+ * \param *buf Pointer to memory buffer
+ * \param type Either NFQNL_MSG_CONFIG or NFQNL_MSG_VERDICT
+ * \param queue_num Queue number
+ * \returns Pointer to netlink message
+ */
+EXPORT_SYMBOL
+struct nlmsghdr *nfq_nlmsg_put(char *buf, int type, uint32_t queue_num)
+{
+	struct nlmsghdr *nlh = mnl_nlmsg_put_header(buf);
+	nlh->nlmsg_type = (NFNL_SUBSYS_QUEUE << 8) | type;
+	nlh->nlmsg_flags = NLM_F_REQUEST;
+
+	struct nfgenmsg *nfg = mnl_nlmsg_put_extra_header(nlh, sizeof(*nfg));
+	nfg->nfgen_family = AF_UNSPEC;
+	nfg->version = NFNETLINK_V0;
+	nfg->res_id = htons(queue_num);
+
+	return nlh;
 }
 
 /**

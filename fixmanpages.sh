@@ -28,6 +28,7 @@ function main
   setgroup nfq_verd nfq_nlmsg_verdict_put
     add2group nfq_nlmsg_verdict_put_mark nfq_nlmsg_verdict_put_pkt
   setgroup nlmsg nfq_nlmsg_parse
+    add2group nfq_nlmsg_put
   setgroup pktbuff pktb_alloc
     add2group pktb_data pktb_len pktb_mangle pktb_mangled
     add2group pktb_free
@@ -52,7 +53,7 @@ function setgroup
   mv $1.3 $2.3
   BASE=$2
 }
-function   add2group
+function add2group
 {
   for i in $@
   do

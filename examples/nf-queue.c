@@ -20,21 +20,6 @@
 
 static struct mnl_socket *nl;
 
-static struct nlmsghdr *
-nfq_hdr_put(char *buf, int type, uint32_t queue_num)
-{
-	struct nlmsghdr *nlh = mnl_nlmsg_put_header(buf);
-	nlh->nlmsg_type	= (NFNL_SUBSYS_QUEUE << 8) | type;
-	nlh->nlmsg_flags = NLM_F_REQUEST;
-
-	struct nfgenmsg *nfg = mnl_nlmsg_put_extra_header(nlh, sizeof(*nfg));
-	nfg->nfgen_family = AF_UNSPEC;
-	nfg->version = NFNETLINK_V0;
-	nfg->res_id = htons(queue_num);
-
-	return nlh;
-}
-
 static void
 nfq_send_verdict(int queue_num, uint32_t id)
 {
@@ -42,7 +27,7 @@ nfq_send_verdict(int queue_num, uint32_t id)
 	struct nlmsghdr *nlh;
 	struct nlattr *nest;
 
-	nlh = nfq_hdr_put(buf, NFQNL_MSG_VERDICT, queue_num);
+	nlh = nfq_nlmsg_put(buf, NFQNL_MSG_VERDICT, queue_num);
 	nfq_nlmsg_verdict_put(nlh, id, NF_ACCEPT);
 
 	/* example to set the connmark. First, start NFQA_CT section: */
@@ -150,7 +135,7 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	nlh = nfq_hdr_put(buf, NFQNL_MSG_CONFIG, queue_num);
+	nlh = nfq_nlmsg_put(buf, NFQNL_MSG_CONFIG, queue_num);
 	nfq_nlmsg_cfg_put_cmd(nlh, AF_INET, NFQNL_CFG_CMD_BIND);
 
 	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0) {
@@ -158,7 +143,7 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	nlh = nfq_hdr_put(buf, NFQNL_MSG_CONFIG, queue_num);
+	nlh = nfq_nlmsg_put(buf, NFQNL_MSG_CONFIG, queue_num);
 	nfq_nlmsg_cfg_put_params(nlh, NFQNL_COPY_PACKET, 0xffff);
 
 	mnl_attr_put_u32(nlh, NFQA_CFG_FLAGS, htonl(NFQA_CFG_F_GSO));

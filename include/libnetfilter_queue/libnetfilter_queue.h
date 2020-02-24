@@ -149,6 +149,7 @@ void nfq_nlmsg_verdict_put_mark(struct nlmsghdr *nlh, uint32_t mark);
 void nfq_nlmsg_verdict_put_pkt(struct nlmsghdr *nlh, const void *pkt, uint32_t pktlen);
 
 int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr);
+struct nlmsghdr *nfq_nlmsg_put(char *buf, int type, uint32_t queue_num);
 
 #ifdef __cplusplus
 } /* extern "C" */
