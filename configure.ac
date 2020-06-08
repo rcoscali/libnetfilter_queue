@@ -38,15 +38,14 @@ AC_CONFIG_FILES([Makefile src/Makefile utils/Makefile examples/Makefile
 
 AC_ARG_WITH([doxygen], [AS_HELP_STRING([--with-doxygen],
 	    [create doxygen documentation])],
-	    [with_doxygen="$withval"], [with_doxygen=yes])
-
-AS_IF([test "x$with_doxygen" != xno], [
+	    [], [with_doxygen=no])
+AS_IF([test "x$with_doxygen" = xyes], [
 	AC_CHECK_PROGS([DOXYGEN], [doxygen])
 ])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
-if test -z "$DOXYGEN"; then
-	dnl Only run doxygen Makefile if doxygen installed
-	AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
-fi
 AC_OUTPUT
+
+echo "
+libnetfilter_queue configuration:
+  doxygen:                      ${with_doxygen}"
