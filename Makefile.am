@@ -10,3 +10,4 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnetfilter_queue.pc
 
 EXTRA_DIST += Make_global.am
+EXTRA_DIST += fixmanpages.sh
