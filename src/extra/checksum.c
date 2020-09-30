@@ -80,7 +80,3 @@ uint16_t nfq_checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr,
 
 	return nfq_checksum(sum, (uint16_t *)payload, len);
 }
-
-/**
- * @}
- */
