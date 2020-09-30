@@ -9,7 +9,7 @@ doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c  \
            $(top_srcdir)/src/extra/pktbuff.c
 
 doxyfile.stamp: $(doc_srcs) $(top_srcdir)/fixmanpages.sh
-	rm -rf html man && cd .. && doxygen doxygen.cfg && ./fixmanpages.sh
+	rm -rf html man && cd .. && doxygen doxygen.cfg >/dev/null && ./fixmanpages.sh
 	touch doxyfile.stamp
 
 CLEANFILES = doxyfile.stamp
