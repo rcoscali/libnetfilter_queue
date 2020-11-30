@@ -2,6 +2,7 @@
 .libs/
 Makefile
 Makefile.in
+.dirstamp
 *.o
 *.la
 *.lo
@@ -12,6 +13,9 @@ Makefile.in
 /config.*
 /configure
 /libtool
+/stamp-h1
 
 /doxygen.cfg
 /libnetfilter_queue.pc
+
+/examples/nf-queue
