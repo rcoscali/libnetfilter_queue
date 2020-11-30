@@ -26,7 +26,7 @@ lib_LTLIBRARIES = libnetfilter_queue.la
 
 noinst_HEADERS = internal.h
 
-libnetfilter_queue_la_LDFLAGS = -Wc,-nostartfiles -lnfnetlink \
+libnetfilter_queue_la_LDFLAGS = -Wc,-nostartfiles \
 				-version-info $(LIBVERSION)
 libnetfilter_queue_la_SOURCES = libnetfilter_queue.c	\
 				nlmsg.c			\
