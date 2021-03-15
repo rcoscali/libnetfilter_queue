@@ -49,6 +49,7 @@ function main
     setgroup udp_internals nfq_udp_compute_checksum_ipv4
       add2group nfq_udp_compute_checksum_ipv6
   setgroup Printing nfq_snprintf_xml
+  setgroup icmp nfq_icmp_get_hdr
 }
 function setgroup
 {

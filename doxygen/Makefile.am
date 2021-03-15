@@ -6,6 +6,7 @@ doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c  \
            $(top_srcdir)/src/extra/ipv4.c          \
            $(top_srcdir)/src/extra/tcp.c           \
            $(top_srcdir)/src/extra/udp.c           \
+           $(top_srcdir)/src/extra/icmp.c          \
            $(top_srcdir)/src/extra/pktbuff.c
 
 doxyfile.stamp: $(doc_srcs) $(top_srcdir)/fixmanpages.sh
