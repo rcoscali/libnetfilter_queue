@@ -37,9 +37,10 @@ AC_CONFIG_FILES([Makefile src/Makefile utils/Makefile examples/Makefile
 	include/linux/Makefile include/linux/netfilter/Makefile])
 
 AC_ARG_WITH([doxygen], [AS_HELP_STRING([--with-doxygen],
-	    [create doxygen documentation [default=no]])],
-	    [], [with_doxygen=no])
-AS_IF([test "x$with_doxygen" = xyes], [
+	    [create doxygen documentation])],
+	    [with_doxygen="$withval"], [with_doxygen=yes])
+
+AS_IF([test "x$with_doxygen" != xno], [
 	AC_CHECK_PROGS([DOXYGEN], [doxygen])
 	AC_CHECK_PROGS([DOT], [dot], [""])
 	AS_IF([test "x$DOT" != "x"],
@@ -48,6 +49,10 @@ AS_IF([test "x$with_doxygen" = xyes], [
 ])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AS_IF([test "x$DOXYGEN" = x], [
+	dnl Only run doxygen Makefile if doxygen installed
+	AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
+])
 AC_OUTPUT
 
 echo "
