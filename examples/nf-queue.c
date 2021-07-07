@@ -15,7 +15,7 @@
 
 #include <libnetfilter_queue/libnetfilter_queue.h>
 
-/* only for NFQA_CT, not needed otherwise: */
+/* NFQA_CT requires CTA_* attributes defined in nfnetlink_conntrack.h */
 #include <linux/netfilter/nfnetlink_conntrack.h>
 
 static struct mnl_socket *nl;
