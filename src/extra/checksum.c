@@ -17,6 +17,7 @@
 #include <netinet/ip6.h>
 #include <netinet/tcp.h>
 
+#include <linux/netfilter/nfnetlink_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
 
 #include "internal.h"

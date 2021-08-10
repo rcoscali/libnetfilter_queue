@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <linux/types.h>
 #include <linux/netfilter.h>		/* for NF_ACCEPT */
+#include <linux/netfilter/nfnetlink_queue.h>
 #include <errno.h>
 
 #include <libnetfilter_queue/libnetfilter_queue.h>

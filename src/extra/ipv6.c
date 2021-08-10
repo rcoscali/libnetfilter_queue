@@ -15,6 +15,7 @@
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
 
+#include <linux/netfilter/nfnetlink_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue_ipv6.h>
 #include <libnetfilter_queue/pktbuff.h>

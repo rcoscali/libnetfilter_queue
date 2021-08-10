@@ -1,6 +1,8 @@
 #ifndef _NFNETLINK_QUEUE_H
 #define _NFNETLINK_QUEUE_H
 
+#warning "libnetfilter_queue/linux_nfnetlink_queue.h is deprecated, add #include <linux/netfilter/nfnetlink_queue.h> to your source code before #include <libnetfilter_queue/libnetfilter_queue.h>"
+
 #ifndef aligned_u64
 #define aligned_u64 unsigned long long __attribute__((aligned(8)))
 #endif

@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 
+#include <linux/netfilter/nfnetlink_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
 #include <libnetfilter_queue/pktbuff.h>

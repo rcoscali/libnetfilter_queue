@@ -17,6 +17,7 @@
 #define _GNU_SOURCE
 #include <netinet/udp.h>
 
+#include <linux/netfilter/nfnetlink_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
 #include <libnetfilter_queue/libnetfilter_queue_udp.h>
 #include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
