@@ -19,6 +19,15 @@
 
 /**
  * \defgroup icmp ICMP helper functions
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/libnetfilter_queue_icmp.h>
+\endmanonly
+ *
  * @{
  */
 

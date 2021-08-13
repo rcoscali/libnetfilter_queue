@@ -23,6 +23,15 @@
 
 /**
  * \defgroup ipv4 IPv4 helper functions
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -88,6 +97,15 @@ int nfq_ip_set_transport_header(struct pkt_buff *pktb, struct iphdr *iph)
  *
  * Most user-space programs will never need these.
  *
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -143,7 +161,7 @@ int nfq_ip_mangle(struct pkt_buff *pktb, unsigned int dataoff,
 }
 
 /**
- * nfq_pkt_snprintf_ip - print IPv4 header into buffer in iptables LOG format
+ * nfq_ip_snprintf - print IPv4 header into buffer in iptables LOG format
  * \param buf: Pointer to buffer that will be used to print the header
  * \param size: Size of the buffer (or remaining room in it)
  * \param iph: Pointer to a valid IPv4 header

@@ -24,6 +24,17 @@
 
 /**
  * \defgroup ipv6 IPv6 helper functions
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <arpa/inet.h>
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue_ipv6.h>
+\endmanonly
+ *
  * @{
  */
 

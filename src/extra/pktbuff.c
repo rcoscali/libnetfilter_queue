@@ -23,8 +23,17 @@
 /**
  * \defgroup pktbuff User-space network packet buffer
  *
- * This library provides the user-space network packet buffer. This abstraction
- * is strongly inspired by Linux kernel network buffer, the so-called sk_buff.
+ * These functions provide the user-space network packet buffer.
+ * This abstraction is strongly inspired by Linux kernel network buffer,
+ * the so-called sk_buff.
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/pktbuff.h>
+\endmanonly
  *
  * @{
  */
@@ -150,20 +159,36 @@ void pktb_free(struct pkt_buff *pktb)
  * \n
  * 1. Functions to get values of members of opaque __struct pktbuff__, described
  * below
- * \n
+ *
  * 2. Internal functions, described in Module __Internal functions__
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/pktbuff.h>
+\endmanonly
  *
  * @{
  */
 
 /**
- * \defgroup uselessfns Internal functions
+ * \defgroup do_not_use Internal functions
  *
- * \warning Do not use these functions. Instead, always use the mangle
+ * Do not use these functions. Instead, always use the mangle
  * function appropriate to the level at which you are working.
  * \n
  * pktb_mangle() uses all the below functions except _pktb_pull_, which is not
  * used by anything.
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/pktbuff.h>
+\endmanonly
  *
  * @{
  */
@@ -317,7 +342,7 @@ static int enlarge_pkt(struct pkt_buff *pktb, unsigned int extra)
  * excess of \b rep_len over \b match_len
  \warning pktb_mangle does not update any checksums. Developers should use the
  appropriate mangler for the protocol level: nfq_ip_mangle(),
- nfq_tcp_mangle_ipv4() or nfq_udp_mangle_ipv4(). IPv6 versions are planned.
+ nfq_tcp_mangle_ipv4(), nfq_udp_mangle_ipv4() or IPv6 variants.
  \n
  It is appropriate to use pktb_mangle to change the MAC header.
  */

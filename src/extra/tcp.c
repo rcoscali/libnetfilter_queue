@@ -29,6 +29,15 @@
 
 /**
  * \defgroup tcp TCP helper functions
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/libnetfilter_queue_tcp.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -91,6 +100,17 @@ unsigned int nfq_tcp_get_payload_len(struct tcphdr *tcph, struct pkt_buff *pktb)
  * \defgroup tcp_internals Internal TCP functions
  *
  * Most user-space programs will never need these.
+ *
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <netinet/ip.h>
+#include <netinet/ip6.h>
+#include <netinet/tcp.h>
+#include <libnetfilter_queue/libnetfilter_queue_tcp.h>
+\endmanonly
  *
  * @{
  */

@@ -28,6 +28,15 @@
 
 /**
  * \defgroup udp UDP helper functions
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <libmnl/libmnl.h>
+#include <libnetfilter_queue/libnetfilter_queue_udp.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -91,6 +100,17 @@ unsigned int nfq_udp_get_payload_len(struct udphdr *udph, struct pkt_buff *pktb)
  * \defgroup udp_internals Internal UDP functions
  *
  * Most user-space programs will never need these.
+ *
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <netinet/ip.h>
+#include <netinet/ip6.h>
+#include <netinet/udp.h>
+#include <libnetfilter_queue/libnetfilter_queue_udp.h>
+\endmanonly
  *
  * @{
  */

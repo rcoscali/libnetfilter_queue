@@ -27,6 +27,16 @@
 
 /**
  * \defgroup nfq_verd Verdict helpers
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter.h>
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -139,6 +149,15 @@ void nfq_nlmsg_verdict_put_pkt(struct nlmsghdr *nlh, const void *pkt,
 
 /**
  * \defgroup nfq_cfg Config helpers
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -205,6 +224,15 @@ void nfq_nlmsg_cfg_put_qmaxlen(struct nlmsghdr *nlh, uint32_t queue_maxlen)
 
 /**
  * \defgroup nlmsg Netlink message helper functions
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
+ *
  * @{
  */
 

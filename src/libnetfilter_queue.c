@@ -271,7 +271,7 @@ struct nfnl_handle *nfq_nfnlh(struct nfq_handle *h)
 		nfq_handle_packet(h, buf, rv);
 	}
 \endverbatim
- * When the decision on a packet has been choosed, the verdict has to be given
+ * When the decision on a packet has been chosen, the verdict has to be given
  * by calling nfq_set_verdict() or nfq_set_verdict2(). The verdict
  * determines the destiny of the packet as follows:
  *
@@ -288,8 +288,18 @@ struct nfnl_handle *nfq_nfnlh(struct nfq_handle *h)
  * is to also set an nfmark using nfq_set_verdict2, and set up the nefilter
  * rules to only queue a packet when the mark is not (yet) set.
  *
- * Data and information about the packet can be fetch by using message parsing
+ * Data and information about the packet can be fetched by using message parsing
  * functions (See \link Parsing \endlink).
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter.h>
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -437,6 +447,14 @@ out_free:
  *
  * When the program has finished with libnetfilter_queue, it has to call
  * the nfq_close() function to free all associated resources.
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
  *
  * @{
  */
@@ -950,6 +968,15 @@ int nfq_set_verdict_mark(struct nfq_q_handle *qh, uint32_t id,
 
 /**
  * \defgroup Parsing Message parsing functions [DEPRECATED]
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
+ *
  * @{
  */
 
@@ -1349,6 +1376,15 @@ do {								\
 
 /**
  * \defgroup Printing Printing [DEPRECATED]
+ *
+ * \manonly
+.SH SYNOPSIS
+.nf
+\fB
+#include <linux/netfilter/nfnetlink_queue.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+\endmanonly
+ *
  * @{
  */
 
