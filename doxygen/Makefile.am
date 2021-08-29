@@ -1,6 +1,14 @@
 if HAVE_DOXYGEN
 
-doc_srcs = $(shell find $(top_srcdir)/src -name '*.c')
+doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c\
+           $(top_srcdir)/src/nlmsg.c\
+           $(top_srcdir)/src/extra/checksum.c\
+           $(top_srcdir)/src/extra/ipv4.c\
+           $(top_srcdir)/src/extra/pktbuff.c\
+           $(top_srcdir)/src/extra/ipv6.c\
+           $(top_srcdir)/src/extra/tcp.c\
+           $(top_srcdir)/src/extra/udp.c\
+           $(top_srcdir)/src/extra/icmp.c
 
 doxyfile.stamp: $(doc_srcs) Makefile.am
 	rm -rf html man
