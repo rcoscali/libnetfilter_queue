@@ -10,7 +10,7 @@ doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c\
            $(top_srcdir)/src/extra/udp.c\
            $(top_srcdir)/src/extra/icmp.c
 
-doxyfile.stamp: $(doc_srcs) Makefile.am
+doxyfile.stamp: $(doc_srcs) Makefile
 	rm -rf html man
 	doxygen doxygen.cfg >/dev/null
 
