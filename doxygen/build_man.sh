@@ -69,6 +69,10 @@ post_process(){
     del_empty_det_desc
     del_def_at_lines
     fix_double_blanks
+
+    # Fix rendering of verbatim "\n" (in code snippets)
+    sed -i 's/\\n/\\\\n/' $target
+
   done
 
   remove_temp_files
