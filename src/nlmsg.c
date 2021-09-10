@@ -253,7 +253,6 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
 	case NFQA_IFINDEX_PHYSOUTDEV:
 	case NFQA_CAP_LEN:
 	case NFQA_SKB_INFO:
-	case NFQA_SECCTX:
 	case NFQA_UID:
 	case NFQA_GID:
 	case NFQA_CT_INFO:
@@ -281,6 +280,7 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
 	case NFQA_PAYLOAD:
 	case NFQA_CT:
 	case NFQA_EXP:
+	case NFQA_SECCTX:
 		break;
 	}
 	tb[type] = attr;
