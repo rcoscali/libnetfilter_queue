@@ -116,7 +116,11 @@ del_empty_det_desc(){
   mygrep "^\\.SH \"Detailed Description" $target
   [ $linnum -ne 0  ] || return 0
   [ $(($i - $linnum)) -eq 3 ] || return 0
-  delete_lines $linnum $(($i -1))
+  # A 1-line Detailed Description is also 3 lines long,
+  # but the 3rd line is not empty
+  i=$(($i -1))
+  [ $(tail -n+$i $target | head -n1 | wc -c) -le 2 ] || return 0
+  delete_lines $linnum $i
 }
 
 move_synopsis(){
