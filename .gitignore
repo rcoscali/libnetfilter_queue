@@ -15,7 +15,10 @@ Makefile.in
 /libtool
 /stamp-h1
 
-/doxygen.cfg
+/doxygen/doxygen.cfg
 /libnetfilter_queue.pc
 
 /examples/nf-queue
+/doxygen/doxyfile.stamp
+/doxygen/html/
+/doxygen/man/
