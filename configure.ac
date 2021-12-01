@@ -64,6 +64,10 @@ AS_IF([test "x$DOXYGEN" = x], [
 		enable_html_doc=no
 		enable_man_pages=no
 	])
+], [
+	dnl Warn user if html docs will be missing diagrams
+	AS_IF([test "$enable_html_doc" = yes -a -z "$DOT"],
+		AC_MSG_WARN([Dot not found - install graphviz to get interactive diagrams in HTML]))
 ])
 
 dnl Output the makefiles
