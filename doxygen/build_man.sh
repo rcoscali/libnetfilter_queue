@@ -96,7 +96,7 @@ fix_double_blanks(){
 del_def_at_lines(){
   linnum=1
   while [ $linnum -ne 0 ]
-  do mygrep "^Definition at line [[:digit:]]* of file" $target
+  do mygrep '^Definition at line (\\fB)?[[:digit:]]*(\\fP)? of file' $target
     [ $linnum -eq 0 ] || delete_lines $(($linnum - 1)) $linnum
   done
 }
