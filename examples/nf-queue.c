@@ -86,6 +86,24 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
 	printf("packet received (id=%u hw=0x%04x hook=%u, payload len %u",
 		id, ntohs(ph->hw_protocol), ph->hook, plen);
 
+	if (attr[NFQA_HWADDR]) {
+		struct nfqnl_msg_packet_hw *hw = mnl_attr_get_payload(attr[NFQA_HWADDR]);
+		unsigned int hwlen = ntohs(hw->hw_addrlen);
+		const char *addr = hw->hw_addr;
+		unsigned int i;
+
+		printf(", hwaddr %02x", addr[0]);
+		for (i = 1; i < hwlen; i++) {
+			if (i >= sizeof(hw->hw_addr)) {
+				printf("[truncated]");
+				break;
+			}
+			printf(":%02x", (unsigned char)addr[i]);
+		}
+
+		printf(" len %u", hwlen);
+	}
+
 	/*
 	 * ip/tcp checksums are not yet valid, e.g. due to GRO/GSO.
 	 * The application should behave as if the checksums are correct.
