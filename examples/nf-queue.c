@@ -89,7 +89,7 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
 	if (attr[NFQA_HWADDR]) {
 		struct nfqnl_msg_packet_hw *hw = mnl_attr_get_payload(attr[NFQA_HWADDR]);
 		unsigned int hwlen = ntohs(hw->hw_addrlen);
-		const char *addr = hw->hw_addr;
+		const unsigned char *addr = hw->hw_addr;
 		unsigned int i;
 
 		printf(", hwaddr %02x", addr[0]);
