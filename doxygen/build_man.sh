@@ -1,4 +1,5 @@
-#!/bin/bash -p
+#!/bin/sh
+[ -n "$BASH" ] || exec bash -p $0
 
 # Script to process man pages output by doxygen.
 # We need to use bash for its associative array facility.
