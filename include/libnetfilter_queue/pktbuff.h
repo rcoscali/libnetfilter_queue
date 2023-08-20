@@ -6,6 +6,9 @@ struct pkt_buff;
 struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra);
 void pktb_free(struct pkt_buff *pktb);
 
+struct pkt_buff *pktb_setup_raw(void *pktb, int family, void *data, size_t len, size_t extra);
+size_t pktb_head_size(void);
+
 uint8_t *pktb_data(struct pkt_buff *pktb);
 uint32_t pktb_len(struct pkt_buff *pktb);
 

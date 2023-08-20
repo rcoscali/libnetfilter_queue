@@ -67,6 +67,14 @@ static int __pktb_setup(int family, struct pkt_buff *pktb)
 	return 0;
 }
 
+static void pktb_setup_metadata(struct pkt_buff *pktb, void *pkt_data,
+				size_t len, size_t extra)
+{
+	pktb->len = len;
+	pktb->data_len = len + extra;
+	pktb->data = pkt_data;
+}
+
 /**
  * pktb_alloc - allocate a new packet buffer
  * \param family Indicate what family. Currently supported families are
@@ -76,7 +84,12 @@ static int __pktb_setup(int family, struct pkt_buff *pktb)
  * \param extra Extra memory in the tail to be allocated (for mangling)
  *
  * This function returns a packet buffer that contains the packet data and
- * some extra memory room in the tail (if requested).
+ * some extra memory room in the tail (if requested). This function copies
+ * the memory area provided as a pointer to packet data into the packet buffer
+ * structure.
+ *
+ * The extra length provides extra packet data room at the tail of the packet
+ * buffer in case you need to mangle it.
  *
  * \return Pointer to a new userspace packet buffer or NULL on failure.
  * \par Errors
@@ -100,15 +113,43 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 	pkt_data = (uint8_t *)pktb + sizeof(struct pkt_buff);
 	memcpy(pkt_data, data, len);
 
-	pktb->len = len;
-	pktb->data_len = len + extra;
-
-	pktb->data = pkt_data;
+	pktb_setup_metadata(pktb, pkt_data, len, extra);
 
 	if (__pktb_setup(family, pktb) < 0) {
 		free(pktb);
 		return NULL;
 	}
+
+	return pktb;
+}
+
+/**
+ * pktb_setup_raw - set up a packet buffer from memory area
+ * \param pktb Pointer to memory of length pktb_head_size() bytes
+ * \param family Supported families are AF_BRIDGE, AF_INET & AF_INET6.
+ * \param data Pointer to packet data
+ * \param len Packet data length
+ * \param extra Extra memory available after packet data (for mangling).
+ *
+ * Use this function to set up a packet buffer from a memory area, minimum size
+ * of such memory area must be pktb_head_size(). This function attaches the
+ * packet data that is provided to the packet buffer (data is not copied). Use
+ * this function as an alternative to the pktb_alloc() interface for more
+ * control on memory management.
+ *
+ * \return Pointer to a new userspace packet buffer or NULL on failure.
+ * \par Errors
+ * __EPROTONOSUPPORT__ _family_ was __AF_BRIDGE__ and this is not an IP packet
+ * (v4 or v6)
+ */
+EXPORT_SYMBOL
+struct pkt_buff *pktb_setup_raw(void *pktb, int family, void *data,
+				size_t len, size_t extra)
+{
+	memset(pktb, 0, sizeof (struct pkt_buff));
+	pktb_setup_metadata(pktb, data, len, extra);
+	if (__pktb_setup(family, pktb) < 0)
+		pktb = NULL;
 
 	return pktb;
 }
@@ -395,6 +436,18 @@ EXPORT_SYMBOL
 bool pktb_mangled(const struct pkt_buff *pktb)
 {
 	return pktb->mangled;
+}
+
+/**
+ * pktb_head_size - get number of bytes needed for a packet buffer
+ *                  (control part only)
+ * \return size of struct pkt_buff
+ */
+
+EXPORT_SYMBOL
+size_t pktb_head_size(void)
+{
+	return sizeof(struct pkt_buff);
 }
 
 /**
