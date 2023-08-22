@@ -54,6 +54,9 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
 	struct nfgenmsg *nfg;
 	uint16_t plen;
 
+	/* Parse netlink message received from the kernel, the array of
+	 * attributes is set up to store metadata and the actual packet.
+	 */
 	if (nfq_nlmsg_parse(nlh, attr) < 0) {
 		perror("problems parsing");
 		return MNL_CB_ERROR;
@@ -66,13 +69,30 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
 		return MNL_CB_ERROR;
 	}
 
+	/* Access packet metadata, which provides unique packet ID, hook number
+	 * and ethertype. See struct nfqnl_msg_packet_hdr for details.
+	 */
 	ph = mnl_attr_get_payload(attr[NFQA_PACKET_HDR]);
 
+	/* Access actual packet data length. */
 	plen = mnl_attr_get_payload_len(attr[NFQA_PAYLOAD]);
+
+	/* Access actual packet data */
 	/* void *payload = mnl_attr_get_payload(attr[NFQA_PAYLOAD]); */
 
+	/* Fetch metadata flags, possible flags values are:
+	 *
+	 * - NFQA_SKB_CSUMNOTREADY:
+	 *	Kernel performed partial checksum validation, see CHECKSUM_PARTIAL.
+	 * - NFQA_SKB_CSUM_NOTVERIFIED:
+	 *	Kernel already verified checksum.
+	 * - NFQA_SKB_GSO:
+	 *	Not the original packet received from the wire. Kernel has
+	 *	aggregated several packets into one single packet via GSO.
+	 */
 	skbinfo = attr[NFQA_SKB_INFO] ? ntohl(mnl_attr_get_u32(attr[NFQA_SKB_INFO])) : 0;
 
+	/* Kernel has truncated the packet, fetch original packet length. */
 	if (attr[NFQA_CAP_LEN]) {
 		uint32_t orig_len = ntohl(mnl_attr_get_u32(attr[NFQA_CAP_LEN]));
 		if (orig_len != plen)
@@ -86,6 +106,7 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
 	printf("packet received (id=%u hw=0x%04x hook=%u, payload len %u",
 		id, ntohs(ph->hw_protocol), ph->hook, plen);
 
+	/* Fetch ethernet destionation address. */
 	if (attr[NFQA_HWADDR]) {
 		struct nfqnl_msg_packet_hw *hw = mnl_attr_get_payload(attr[NFQA_HWADDR]);
 		unsigned int hwlen = ntohs(hw->hw_addrlen);
@@ -135,6 +156,9 @@ int main(int argc, char *argv[])
 	}
 	queue_num = atoi(argv[1]);
 
+	/*
+	 * Set up netlink socket to communicate with the netfilter subsystem.
+	 */
 	nl = mnl_socket_open(NETLINK_NETFILTER);
 	if (nl == NULL) {
 		perror("mnl_socket_open");
@@ -153,6 +177,10 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	/* Configure the pipeline between kernel and userspace, build and send
+	 * a netlink message to specify queue number to bind to. Your ruleset
+	 * has to use this queue number to deliver packets to userspace.
+	 */
 	nlh = nfq_nlmsg_put(buf, NFQNL_MSG_CONFIG, queue_num);
 	nfq_nlmsg_cfg_put_cmd(nlh, AF_INET, NFQNL_CFG_CMD_BIND);
 
@@ -161,6 +189,9 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	/* Build and send a netlink message to specify how many bytes are
+	 * copied from kernel to userspace for this queue.
+	 */
 	nlh = nfq_nlmsg_put(buf, NFQNL_MSG_CONFIG, queue_num);
 	nfq_nlmsg_cfg_put_params(nlh, NFQNL_COPY_PACKET, 0xffff);
 
@@ -179,6 +210,9 @@ int main(int argc, char *argv[])
 	ret = 1;
 	mnl_socket_setsockopt(nl, NETLINK_NO_ENOBUFS, &ret, sizeof(int));
 
+	/* Loop forever on packets received from the kernel and run the
+	 * callback handler.
+	 */
 	for (;;) {
 		ret = mnl_socket_recvfrom(nl, buf, sizeof_buf);
 		if (ret == -1) {
