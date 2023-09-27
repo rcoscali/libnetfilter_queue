@@ -106,7 +106,7 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
 	printf("packet received (id=%u hw=0x%04x hook=%u, payload len %u",
 		id, ntohs(ph->hw_protocol), ph->hook, plen);
 
-	/* Fetch ethernet destionation address. */
+	/* Fetch ethernet destination address. */
 	if (attr[NFQA_HWADDR]) {
 		struct nfqnl_msg_packet_hw *hw = mnl_attr_get_payload(attr[NFQA_HWADDR]);
 		unsigned int hwlen = ntohs(hw->hw_addrlen);
