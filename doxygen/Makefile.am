@@ -10,12 +10,12 @@ doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c\
            $(top_srcdir)/src/extra/udp.c\
            $(top_srcdir)/src/extra/icmp.c
 
-doxyfile.stamp: $(doc_srcs) Makefile
+doxyfile.stamp: $(doc_srcs) Makefile build_man.sh
 	rm -rf html man
 	doxygen doxygen.cfg >/dev/null
 
 if BUILD_MAN
-	$(abs_top_srcdir)/doxygen/build_man.sh
+	$(abs_top_srcdir)/doxygen/build_man.sh libnetfilter_queue libnetfilter_queue.c
 endif
 
 	touch doxyfile.stamp

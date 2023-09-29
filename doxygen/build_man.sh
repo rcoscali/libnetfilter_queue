@@ -1,19 +1,20 @@
 #!/bin/sh
-[ -n "$BASH" ] || exec bash -p $0
+[ -n "$BASH" ] || exec bash -p $0 $@
 
 # Script to process man pages output by doxygen.
 # We need to use bash for its associative array facility.
 # (`bash -p` prevents import of functions from the environment).
+# Args: none or 2 being man7 page name & relative path of source with \mainpage
 
 declare -A renamed_page
 
 main(){
   set -e
-  cd man/man3; rm -f _*
+  pushd man/man3 >/dev/null; rm -f _*
   count_real_pages
   rename_real_pages
   make_symlinks
-  post_process
+  post_process $@
 }
 
 count_real_pages(){
@@ -76,7 +77,101 @@ post_process(){
 
   done
 
+  [ $# -ne 2 ] || make_man7 $@
+
   remove_temp_files
+}
+
+make_man7(){
+  popd >/dev/null
+  target=$(grep -Ew INPUT doxygen.cfg | rev | cut -f1 -d' ' | rev)/$2
+  mypath=$(dirname $0)
+
+  # Build up temporary source in temp.c
+  # (doxygen only makes man pages from .c files).
+  mygrep \\\\mainpage $target
+  tail -n+$((linnum-1)) $target | head -n1 >temp.c
+  echo " * \\defgroup $1 $1 overview" >>temp.c
+  tail -n+$((linnum+1)) $target >$fileA
+  linnum=$(grep -En '\*/' $fileA | head -n1 | cut -d: -f1)
+  head -n$((linnum - 1)) $fileA >> temp.c
+
+  echo ' */' >> temp.c
+  cat >> temp.c <<////
+
+ /**
+  * @{
+  *
+  * $1 - DELETE_ME
+  */
+int $1(void)
+{
+	return 0;
+}
+/**
+ * @}
+ */
+////
+
+  # Create temporary doxygen config in fileC
+  cat /dev/null >$fileC
+  for i in \
+  PROJECT_NAME \
+  PROJECT_NUMBER \
+  ABBREVIATE_BRIEF \
+  FULL_PATH_NAMES \
+  TAB_SIZE \
+  OPTIMIZE_OUTPUT_FOR_C \
+  EXAMPLE_PATTERNS \
+  ALPHABETICAL_INDEX \
+  SEARCHENGINE \
+  GENERATE_LATEX \
+  ; do grep -Ew $i doxygen.cfg >>$fileC; done
+  cat >>$fileC <<////
+INPUT = temp.c
+GENERATE_HTML = NO
+GENERATE_MAN = YES
+MAN_EXTENSION = .7
+////
+
+  doxygen $fileC >/dev/null
+
+  # Remove SYNOPSIS line if there is one
+  target=man/man7/$1.7
+  mygrep "SH SYNOPSIS" $target
+  [ $linnum -eq 0 ] || delete_lines $linnum $((linnum+1))
+
+  # doxygen 1.8.9.1 and possibly newer run the first para into NAME
+  # (i.e. in this unusual group). There won't be a SYNOPSIS when this happens
+  if grep -Eq "overview$1" $target; then
+    head -n2 temp.c >$fileA
+    cat >>$fileA <<////
+ * \\manonly
+.PP
+.SH "Detailed Description"
+.PP
+\\endmanonly
+////
+    tail -n+3 temp.c >>$fileA
+    cat $fileA >temp.c
+    doxygen $fileC >/dev/null
+  fi
+
+  # Insert top-level "See also" of man7 page in all real man3 pages
+  for target in $(find man/man3 -type f)
+  do mygrep "Detailed Description" $target
+    [ $linnum -ne 0 ] || mygrep "Function Documentation" $target
+    [ $linnum -ne 0 ] || { echo "NO HEADER IN $target" >&2; continue; }
+    head -n$((linnum-1)) $target >$fileA
+    cat >>$fileA <<////
+.SH "See also"
+\\fB${1}\\fP(7)
+////
+    tail -n+$linnum $target >>$fileA
+    cp $fileA $target
+  done
+
+  rm temp.c
 }
 
 fix_double_blanks(){
@@ -225,4 +320,4 @@ remove_temp_files(){
   done
 }
 
-main
+main $@

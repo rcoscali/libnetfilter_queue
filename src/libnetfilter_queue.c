@@ -45,11 +45,11 @@
  * libnetfilter_queue homepage is:
  * 	https://netfilter.org/projects/libnetfilter_queue/
  *
- * \section deps Dependencies
+ <h1>Dependencies</h1>
  * libnetfilter_queue requires libmnl, libnfnetlink and a kernel that includes
  * the Netfilter NFQUEUE over NFNETLINK interface (i.e. 2.6.14 or later).
  *
- * \section features Main Features
+ * <h1>Main Features</h1>
  *  - receiving queued packets from the kernel nfnetlink_queue subsystem
  *  - issuing verdicts and possibly reinjecting altered packets to the kernel
  *  nfnetlink_queue subsystem
@@ -71,15 +71,15 @@
  * When a queue is full, packets that should have been enqueued are dropped by
  * kernel instead of being enqueued.
  *
- * \section git Git Tree
+ * <h1>Git Tree</h1>
  * The current development version of libnetfilter_queue can be accessed at
  * https://git.netfilter.org/libnetfilter_queue.
  *
- * \section privs Privileges
+ * <h1>Privileges</h1>
  * You need the CAP_NET_ADMIN capability in order to allow your application
  * to receive from and to send packets to kernel-space.
  *
- * \section using Using libnetfilter_queue
+ * <h1>Using libnetfilter_queue</h1>
  *
  * To write your own program using libnetfilter_queue, you should start by
  * reading (or, if feasible, compiling and stepping through with *gdb*)
@@ -88,7 +88,14 @@
  * \verbatim
 gcc -g3 -ggdb -Wall -lmnl -lnetfilter_queue -o nf-queue nf-queue.c
 \endverbatim
- * The doxygen documentation \link LibrarySetup \endlink is Deprecated and
+ *The doxygen documentation
+ * \htmlonly
+<a class="el" href="group__LibrarySetup.html">LibrarySetup </a>
+\endhtmlonly
+ * \manonly
+\fBLibrarySetup\fP\
+\endmanonly
+ * is Deprecated and
  * incompatible with non-deprecated functions. It is hoped to produce a
  * corresponding non-deprecated (*Current*) topic soon.
  *
@@ -97,7 +104,7 @@ gcc -g3 -ggdb -Wall -lmnl -lnetfilter_queue -o nf-queue nf-queue.c
  * article:
  *  https://home.regit.org/netfilter-en/using-nfqueue-and-libnetfilter_queue/
  *
- * \section errors ENOBUFS errors in recv()
+ * <h1>ENOBUFS errors in recv()</h1>
  *
  * recv() may return -1 and errno is set to ENOBUFS in case that your
  * application is not fast enough to retrieve the packets from the kernel.
@@ -106,7 +113,7 @@ gcc -g3 -ggdb -Wall -lmnl -lnetfilter_queue -o nf-queue nf-queue.c
  * you may hit it again sooner or later. The next section provides some hints
  * on how to obtain the best performance for your application.
  *
- * \section perf Performance
+ * <h1>Performance</h1>
  * To improve your libnetfilter_queue application in terms of performance,
  * you may consider the following tweaks:
  *
