@@ -113,11 +113,11 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
 				break;
 			}
 
-			frag_off = (uint16_t *)cur +
-					offsetof(struct ip6_frag, ip6f_offlg);
+			frag_off = (uint16_t *)(cur +
+					offsetof(struct ip6_frag, ip6f_offlg));
 
 			/* Fragment offset is only 13 bits long. */
-			if (htons(*frag_off & ~0x7)) {
+			if (htons(*frag_off) & ~0x7) {
 				/* Not the first fragment, it does not contain
 				 * any headers.
 				 */
