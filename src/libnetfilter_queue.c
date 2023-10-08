@@ -127,6 +127,9 @@ gcc -g3 -ggdb -Wall -lmnl -lnetfilter_queue -o nf-queue nf-queue.c
  * (it requires Linux kernel >= 2.6.31).
  * - consider using fail-open option see nfq_set_queue_flags() (it requires
  *  Linux kernel >= 3.6)
+ * - make your application offload aware to avoid costly normalization on kernel
+ * side.  See NFQA_CFG_F_GSO flag to nfq_set_queue_flags().
+ *  Linux kernel >= 3.10.
  * - increase queue max length with nfq_set_queue_maxlen() to resist to packets
  * burst
  */
