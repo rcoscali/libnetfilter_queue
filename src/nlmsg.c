@@ -310,9 +310,65 @@ int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr)
 EXPORT_SYMBOL
 struct nlmsghdr *nfq_nlmsg_put(char *buf, int type, uint32_t queue_num)
 {
+	return nfq_nlmsg_put2(buf, type, queue_num, 0);
+}
+
+/**
+ * nfq_nlmsg_put2 - Set up a netlink header with user-specified flags
+ *                  in a memory buffer
+ * \param *buf Pointer to memory buffer
+ * \param type One of NFQNL_MSG_CONFIG, NFQNL_MSG_VERDICT
+ *             or NFQNL_MSG_VERDICT_BATCH
+ * \param queue_num Queue number
+ * \param flags additional NLM_F_xxx flags to put in message header. These are
+ *              defined in /usr/include/linux/netlink.h. nfq_nlmsg_put2() always
+ *              sets NLM_F_REQUEST
+ * \returns Pointer to netlink header
+ *
+ * For most applications, the only sensible flag will be NLM_F_ACK.
+ * Use it to get an explicit acknowledgment from the kernel, e.g.
+ * attempt to configure NFQA_CFG_F_SECCTX on a kernel not supporting
+ * CONFIG_NETWORK_SECMARK.
+ * \n
+ * The kernel always sends a message in response to a failed command.
+ * NLM_F_ACK instructs the kernel to also send a message in response
+ * to a successful command.
+ * \n
+ * This code snippet demonstrates reading these responses:
+ * \verbatim
+	char buf[MNL_SOCKET_BUFFER_SIZE];
+
+	nlh = nfq_nlmsg_put2(buf, NFQNL_MSG_CONFIG, queue_num,
+			     NLM_F_ACK);
+	mnl_attr_put_u32(nlh, NFQA_CFG_FLAGS, NFQA_CFG_F_SECCTX);
+	mnl_attr_put_u32(nlh, NFQA_CFG_MASK, NFQA_CFG_F_SECCTX);
+
+	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0) {
+		perror("mnl_socket_send");
+		exit(EXIT_FAILURE);
+	}
+
+	ret = mnl_socket_recvfrom(nl, buf, sizeof buf);
+	if (ret == -1) {
+		perror("mnl_socket_recvfrom");
+		exit(EXIT_FAILURE);
+	}
+
+	ret = mnl_cb_run(buf, ret, 0, portid, NULL, NULL);
+	if (ret == -1)
+		fprintf(stderr, "This kernel version does not allow to "
+				"retrieve security context.\n");
+\endverbatim
+ *
+ */
+
+EXPORT_SYMBOL
+struct nlmsghdr *nfq_nlmsg_put2(char *buf, int type, uint32_t queue_num,
+				uint16_t flags)
+{
 	struct nlmsghdr *nlh = mnl_nlmsg_put_header(buf);
 	nlh->nlmsg_type = (NFNL_SUBSYS_QUEUE << 8) | type;
-	nlh->nlmsg_flags = NLM_F_REQUEST;
+	nlh->nlmsg_flags = NLM_F_REQUEST | flags;
 
 	struct nfgenmsg *nfg = mnl_nlmsg_put_extra_header(nlh, sizeof(*nfg));
 	nfg->nfgen_family = AF_UNSPEC;
