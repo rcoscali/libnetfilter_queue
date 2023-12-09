@@ -111,7 +111,7 @@ extern int nfq_get_secctx(struct nfq_data *nfad, unsigned char **secdata);
 extern int nfq_get_indev_name(struct nlif_handle *nlif_handle,
 			      struct nfq_data *nfad, char *name);
 extern int nfq_get_physindev_name(struct nlif_handle *nlif_handle,
-			          struct nfq_data *nfad, char *name);
+				  struct nfq_data *nfad, char *name);
 extern int nfq_get_outdev_name(struct nlif_handle *nlif_handle,
 			       struct nfq_data *nfad, char *name);
 extern int nfq_get_physoutdev_name(struct nlif_handle *nlif_handle,
